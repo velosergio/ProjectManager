@@ -1,0 +1,42 @@
+# Dependencies
+node_modules
+npm-debug.log*
+
+# Next.js build output
+.next
+out
+
+# Environment files — never bake secrets into the image
+.env
+.env.local
+.env.development
+.env.production
+
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# Tooling
+.husky
+.biome
+biome.json
+
+# Dev / editor
+.vscode
+.idea
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docs / media
+README.md
+CONTRIBUTING.md
+ROADMAP.md
+media/
+
+# Prisma — migrations folder is included, but not local SQLite dev DBs
+prisma/*.db
+prisma/*.db-journal
