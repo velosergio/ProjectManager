@@ -15,14 +15,25 @@ import {
   MessageSquare,
   ReceiptText,
   Server,
+  ShieldCheck,
   ShoppingBag,
   SquareArrowUpRight,
   Users,
 } from "lucide-react";
 
+import type { UserRole } from "@/generated/prisma/client";
+import type { PlanFeature } from "@/lib/plans/definitions";
+
 export type NavBadge = "new" | "soon";
 
-export interface NavSubItem {
+/// Restricciones de acceso de un item: por rol global y/o por feature del plan.
+/// Sin restricciones, el item es visible para cualquier sesión.
+export interface NavAccess {
+  requiredRole?: UserRole;
+  requiredFeature?: PlanFeature;
+}
+
+export interface NavSubItem extends NavAccess {
   id: string;
   title: string;
   url: string;
@@ -32,7 +43,7 @@ export interface NavSubItem {
   newTab?: boolean;
 }
 
-interface NavItemBase {
+interface NavItemBase extends NavAccess {
   id: string;
   title: string;
   icon?: LucideIcon;
@@ -60,6 +71,19 @@ export interface NavGroup {
 
 export const sidebarItems: NavGroup[] = [
   {
+    id: 0,
+    label: "Plataforma",
+    items: [
+      {
+        id: "mango-console",
+        title: "Consola mango",
+        url: "/dashboard/mango",
+        icon: ShieldCheck,
+        requiredRole: "MANGO",
+      },
+    ],
+  },
+  {
     id: 1,
     label: "Dashboards",
     items: [
@@ -86,6 +110,8 @@ export const sidebarItems: NavGroup[] = [
         title: "Analytics",
         url: "/dashboard/analytics",
         icon: Gauge,
+        // Tablero ejecutivo: solo en planes que incluyen la feature.
+        requiredFeature: "executiveDashboard",
       },
       {
         id: "productivity",

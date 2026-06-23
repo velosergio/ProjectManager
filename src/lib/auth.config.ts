@@ -1,5 +1,7 @@
 import type { NextAuthConfig } from "next-auth";
 
+import type { UserRole } from "@/generated/prisma/client";
+
 /**
  * Configuración base de NextAuth segura para el runtime edge (middleware).
  *
@@ -20,12 +22,18 @@ export const authConfig = {
     jwt: ({ token, user }) => {
       if (user) {
         token.id = user.id;
+        // `role` y `tenantId` provienen de `authorize()` (ver auth.ts) y viajan
+        // en el JWT para que el middleware edge no necesite acceder a la base.
+        token.role = user.role;
+        token.tenantId = user.tenantId ?? null;
       }
       return token;
     },
     session: ({ session, token }) => {
       if (token.id && session.user) {
         session.user.id = token.id as string;
+        session.user.role = (token.role as UserRole | undefined) ?? "ADMIN";
+        session.user.tenantId = (token.tenantId as string | null | undefined) ?? null;
       }
       return session;
     },

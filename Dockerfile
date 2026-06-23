@@ -80,10 +80,16 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
-# Copy Prisma schema + migrations so we can run migrations on startup
+# Prisma 7: el cliente generado se empaqueta dentro de .next/standalone, así que
+# ya NO existe node_modules/.prisma. Para poder ejecutar `prisma migrate deploy`
+# en el arranque copiamos el schema + migraciones, el archivo de configuración
+# (aporta la URL del datasource, que ya no vive en el schema) y el CLI de Prisma
+# con sus dependencias (@prisma/*, prisma, dotenv).
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder --chown=nextjs:nodejs /app/prisma.config.ts ./prisma.config.ts
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma ./node_modules/@prisma
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/prisma ./node_modules/prisma
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/dotenv ./node_modules/dotenv
 
 # Copy the startup script
 COPY --chown=nextjs:nodejs docker-entrypoint.sh ./

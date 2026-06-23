@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
 
-import bcrypt from "bcryptjs";
 import { z } from "zod";
 
-import { prisma } from "@/lib/prisma";
+import { registerOrganization } from "@/lib/register";
 
 const registerSchema = z.object({
+  organizationName: z.string().min(2, "El nombre de la organización debe tener al menos 2 caracteres."),
   name: z.string().min(2, "El nombre debe tener al menos 2 caracteres."),
   email: z.string().email("Ingresa un correo electrónico válido."),
-  password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres."),
+  password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres."),
 });
 
 export async function POST(request: Request) {
@@ -25,18 +25,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Datos inválidos.", issues: parsed.error.flatten() }, { status: 400 });
   }
 
-  const { name, email, password } = parsed.data;
+  const result = await registerOrganization(parsed.data);
 
-  const existingUser = await prisma.user.findUnique({ where: { email } });
-  if (existingUser) {
-    return NextResponse.json({ error: "Ya existe una cuenta con este correo electrónico." }, { status: 409 });
+  if (!result.ok) {
+    if (result.code === "EMAIL_TAKEN") {
+      return NextResponse.json({ error: "Ya existe una cuenta con este correo electrónico." }, { status: 409 });
+    }
+    return NextResponse.json(
+      { error: "No hay planes configurados. Ejecuta el seed de la base de datos." },
+      { status: 500 },
+    );
   }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  await prisma.user.create({
-    data: { name, email, password: hashedPassword },
-  });
 
   return NextResponse.json({ ok: true }, { status: 201 });
 }

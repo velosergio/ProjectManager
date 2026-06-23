@@ -4,8 +4,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
-shell commands, and other important information, read the current plan:
-`specs/001-auth-guard-landing/plan.md`
+shell commands, and other important information, read the current plan
+at specs/002-core-multitenant/plan.md
 <!-- SPECKIT END -->
 
 ## Idioma
@@ -74,7 +74,8 @@ Doctor. Husky + lint-staged corren en pre-commit; no usar `--no-verify` sin auto
 - **React Compiler activado** (`reactCompiler: true` en `next.config.mjs`) — no añadir `useMemo`/
   `useCallback` manuales por defecto; el compilador memoiza.
 - **Tailwind CSS v4** + **shadcn/ui** (Radix / base-ui). Notificaciones unificadas con **Sonner**.
-- **Prisma + MySQL** (en producción/Docker, MariaDB).
+- **Prisma 7 + MySQL** (en producción/Docker, MariaDB). Cliente "Rust-free" vía **driver adapter**
+  `@prisma/adapter-mariadb` (ver sección «Datos»).
 - **NextAuth v5 (beta)** con provider Credentials + adapter Prisma, estrategia JWT.
 - Estado: **Zustand** (ligero) y **TanStack Query**. Tablas: **TanStack Table**. Formularios:
   **React Hook Form** + **Zod**. Drag & drop: **dnd-kit**. Calendario: **FullCalendar**.
@@ -107,13 +108,31 @@ y se compilan a `src/lib/preferences/theme.ts` mediante `npm run generate:preset
 
 ## Datos (Prisma)
 
-`prisma/schema.prisma` define hoy solo los modelos de autenticación: `User` (con enums `UserRole`
-ADMIN/MANAGER/MEMBER/VIEWER y `UserStatus`), más los modelos del adapter de NextAuth (`Account`,
-`Session`, `VerificationToken`). Los modelos de negocio del `ROADMAP.md` (`Tenant`, `Plan`,
-`Subscription`, `Project`, etc.) **aún no existen** y deben añadirse con migraciones versionadas.
+**Configuración Prisma 7** (cliente sin engine de Rust):
+- El generador es `prisma-client` (no `prisma-client-js`) con `output = "../src/generated/prisma"`.
+  El cliente se genera fuera de `node_modules`, en `src/generated/` (ignorado por git y por Biome);
+  **no editarlo a mano** y regenerarlo con `npm run db:generate`. Importarlo siempre desde
+  `@/generated/prisma/client` (no desde `@prisma/client`). `postinstall` lo regenera en cada install.
+- Prisma 7 **exige un driver adapter**: `src/lib/prisma.ts` instancia `PrismaClient` con
+  `PrismaMariaDb(process.env.DATABASE_URL)` (`@prisma/adapter-mariadb`, compatible con el esquema
+  `mysql://`). El middleware/edge sigue sin importar Prisma (ver `proxy.ts`).
+- La URL del datasource **ya no vive en el schema** (Prisma 7 lo prohíbe): está en `prisma.config.ts`
+  (raíz), que carga `.env.local`/`.env` vía `dotenv` para el CLI. El `datasource` del schema solo
+  declara `provider = "mysql"`.
 
-Multitenant previsto: discriminador `tenantId` en todas las entidades de negocio + scoping forzado
-en cada query (middleware/extensión Prisma); el rol global `mango` omite el scoping.
+`prisma/schema.prisma` define `User` (enums `UserRole` con ADMIN/**MANGO**/MANAGER/MEMBER/VIEWER y
+`UserStatus`; `User` gana `tenantId` nullable) y los modelos del adapter de NextAuth (`Account`,
+`Session`, `VerificationToken`). La FASE 1 añadió los modelos de negocio: `Tenant`, `Plan`,
+`Subscription`, `Client`, `Project`, `Process`, `Task`, `FileAsset`, `Event` y `PasswordResetToken`,
+con migración versionada en `prisma/migrations/` y seed de planes en `prisma/seed.ts`.
+
+**Aislamiento multitenant (FR-002).** El scoping por `tenantId` se aplica con una **extensión de
+cliente Prisma** (Prisma 7 ya no soporta `$use`). El código de feature **debe** leer/escribir datos
+de negocio a través de `getTenantDb()` (cliente escopado al tenant de la sesión) o `getAdminDb()`
+(acceso global, solo rol `mango`) de `src/lib/tenant-db-session.ts` — **nunca** el cliente base
+`@/lib/prisma` para entidades de negocio. La lógica pura de scoping vive en `src/lib/tenant-db.ts`.
+El gating de planes (cuotas + features) está en `src/lib/plans/`. El `tenantId` y el `role` viajan en
+el JWT de NextAuth (ver `src/types/next-auth.d.ts`).
 
 ## Convenciones de Biome (notables)
 
