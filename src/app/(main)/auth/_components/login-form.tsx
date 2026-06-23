@@ -51,7 +51,7 @@ export function LoginForm() {
     }
 
     toast.success("Sesión iniciada correctamente.");
-    router.push("/dashboard/default");
+    router.push("/dashboard");
     router.refresh();
   };
 

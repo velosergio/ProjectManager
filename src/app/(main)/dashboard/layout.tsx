@@ -1,42 +1,56 @@
 import type { ReactNode } from "react";
 
 import { cookies } from "next/headers";
-import Link from "next/link";
-
-import { siGithub } from "simple-icons";
 
 import { AppSidebar } from "@/app/(main)/dashboard/_components/sidebar/app-sidebar";
-import { SimpleIcon } from "@/components/simple-icon";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { users } from "@/data/users";
-import { getAccessContext } from "@/lib/authz-server";
+import type { UserRole } from "@/generated/prisma/client";
+import { getOrCreateNotificationPreferences } from "@/lib/notifications";
 import { PLAN_NAMES } from "@/lib/plans/definitions";
 import { SIDEBAR_COLLAPSIBLE_VALUES, SIDEBAR_VARIANT_VALUES } from "@/lib/preferences/layout";
+import { prisma } from "@/lib/prisma";
+import { getTenantContext } from "@/lib/tenant-context";
 import { cn } from "@/lib/utils";
-import { filterSidebarItems } from "@/navigation/sidebar/filter-sidebar-items";
-import { sidebarItems } from "@/navigation/sidebar/sidebar-items";
 import { getPreference } from "@/server/server-actions";
 
-import { AccountSwitcher } from "./_components/sidebar/account-switcher";
-import { LayoutControls } from "./_components/sidebar/layout-controls";
 import { SearchDialog } from "./_components/sidebar/search-dialog";
 import { ThemeSwitcher } from "./_components/sidebar/theme-switcher";
 
 export default async function Layout({ children }: Readonly<{ children: ReactNode }>) {
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get("sidebar_state")?.value !== "false";
-  // Navegación adaptada a rol y plan (FR-022/FR-023). Estas lecturas son
-  // independientes entre sí, así que se resuelven en paralelo.
-  const [variant, collapsible, access] = await Promise.all([
+
+  // Contexto de la sesión: usuario real + plan vigente para la navegación.
+  const ctx = await getTenantContext();
+  const [variant, collapsible, sessionUser, subscription, notificationPreferences] = await Promise.all([
     getPreference("sidebar_variant", SIDEBAR_VARIANT_VALUES, "inset"),
     getPreference("sidebar_collapsible", SIDEBAR_COLLAPSIBLE_VALUES, "icon"),
-    getAccessContext(),
+    ctx ? prisma.user.findUnique({ where: { id: ctx.userId } }) : Promise.resolve(null),
+    ctx?.tenantId
+      ? prisma.subscription.findUnique({ where: { tenantId: ctx.tenantId }, include: { plan: true } })
+      : Promise.resolve(null),
+    ctx
+      ? getOrCreateNotificationPreferences(ctx.userId)
+      : Promise.resolve({
+          emailAlerts: true,
+          productUpdates: false,
+          taskReminders: true,
+        }),
   ]);
 
-  const navItems = access ? filterSidebarItems(sidebarItems, access) : sidebarItems;
+  // Navegación adaptada a rol y plan (FR-022/FR-023).
+  const access = ctx ? { role: ctx.role, planCode: subscription?.plan.code ?? null } : null;
   const planLabel = access?.role === "MANGO" ? "Mango (global)" : access?.planCode ? PLAN_NAMES[access.planCode] : null;
+
+  // Usuario real mostrado en los menús del sidebar y la cabecera.
+  const currentUser = {
+    id: sessionUser?.id ?? "current",
+    name: sessionUser?.name ?? "Usuario",
+    email: sessionUser?.email ?? "",
+    avatar: sessionUser?.image ?? "",
+    role: (ctx?.role ?? "ADMIN") as UserRole,
+  };
 
   return (
     <SidebarProvider
@@ -47,7 +61,14 @@ export default async function Layout({ children }: Readonly<{ children: ReactNod
         } as React.CSSProperties
       }
     >
-      <AppSidebar variant={variant} collapsible={collapsible} items={navItems} planLabel={planLabel} />
+      <AppSidebar
+        variant={variant}
+        collapsible={collapsible}
+        access={access}
+        planLabel={planLabel}
+        user={currentUser}
+        notificationPreferences={notificationPreferences}
+      />
       <SidebarInset
         className={cn(
           "[html[data-content-layout=centered]_&>*]:mx-auto",
@@ -75,20 +96,7 @@ export default async function Layout({ children }: Readonly<{ children: ReactNod
               <SearchDialog />
             </div>
             <div className="flex items-center gap-2">
-              <LayoutControls />
               <ThemeSwitcher />
-              <Button asChild size="icon">
-                <Link
-                  prefetch={false}
-                  href="https://github.com/arhamkhnz/next-shadcn-admin-dashboard"
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label="Open GitHub repository"
-                >
-                  <SimpleIcon icon={siGithub} className="fill-primary-foreground" />
-                </Link>
-              </Button>
-              <AccountSwitcher users={users} />
             </div>
           </div>
         </header>

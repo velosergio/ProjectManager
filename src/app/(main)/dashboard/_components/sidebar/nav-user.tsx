@@ -1,6 +1,9 @@
 "use client";
 
-import { CircleUser, CreditCard, EllipsisVertical, LogOut, MessageSquareDot } from "lucide-react";
+import { useState } from "react";
+
+import { EllipsisVertical, LogOut, Settings } from "lucide-react";
+import { signOut } from "next-auth/react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -13,18 +16,35 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
+import type { UserRole } from "@/generated/prisma/client";
+import type { NotificationPreferenceView } from "@/lib/notifications";
 import { getInitials } from "@/lib/utils";
 
-export function NavUser({
-  user,
-}: {
-  readonly user: {
-    readonly name: string;
-    readonly email: string;
-    readonly avatar: string;
-  };
-}) {
+import { SettingsDialog, type SettingsSection } from "./settings-dialog/settings-dialog";
+
+const ROLE_LABELS: Record<UserRole, string> = {
+  ADMIN: "Administrador",
+  MANGO: "Mango (global)",
+  MANAGER: "Gerente",
+  MEMBER: "Miembro",
+  VIEWER: "Lector",
+};
+
+type NavUserProps = {
+  readonly user: { name: string; email: string; avatar: string; role: UserRole };
+  readonly planLabel: string | null;
+  readonly notificationPreferences: NotificationPreferenceView;
+};
+
+export function NavUser({ user, planLabel, notificationPreferences }: NavUserProps) {
   const { isMobile } = useSidebar();
+  const [open, setOpen] = useState(false);
+  const [section, setSection] = useState<SettingsSection>("account");
+
+  const openSection = (next: SettingsSection) => {
+    setSection(next);
+    setOpen(true);
+  };
 
   return (
     <SidebarMenu>
@@ -66,27 +86,30 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <CircleUser />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <MessageSquareDot />
-                Notifications
+              <DropdownMenuItem onClick={() => openSection("appearance")}>
+                <Settings />
+                Configuración
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => void signOut({ callbackUrl: "/auth/v1/login" })}>
               <LogOut />
-              Log out
+              Cerrar sesión
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
+
+      <SettingsDialog
+        open={open}
+        onOpenChange={setOpen}
+        section={section}
+        onSectionChange={setSection}
+        user={{ name: user.name, email: user.email, image: user.avatar }}
+        planLabel={planLabel}
+        roleLabel={ROLE_LABELS[user.role]}
+        notificationPreferences={notificationPreferences}
+      />
     </SidebarMenu>
   );
 }

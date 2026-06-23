@@ -17,7 +17,7 @@ export default auth((req) => {
 
   // Usuario autenticado en una ruta pública (landing o auth) → llevarlo a su área de trabajo.
   if (isLoggedIn && publicRoute) {
-    return Response.redirect(new URL("/dashboard/default", nextUrl));
+    return Response.redirect(new URL("/dashboard", nextUrl));
   }
 
   // Acceso no autenticado a una ruta protegida → redirigir a la landing.

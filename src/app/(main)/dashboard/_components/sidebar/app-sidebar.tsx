@@ -16,13 +16,15 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { APP_CONFIG } from "@/config/app-config";
-import { rootUser } from "@/data/users";
-import { type NavGroup, sidebarItems } from "@/navigation/sidebar/sidebar-items";
+import type { UserRole } from "@/generated/prisma/client";
+import type { AccessContext } from "@/lib/authz";
+import type { NotificationPreferenceView } from "@/lib/notifications";
+import { filterSidebarItems } from "@/navigation/sidebar/filter-sidebar-items";
+import { sidebarItems } from "@/navigation/sidebar/sidebar-items";
 import { usePreferencesStore } from "@/stores/preferences/preferences-provider";
 
 import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
-import { SidebarSupportCard } from "./sidebar-support-card";
 
 const _data = {
   navSecondary: [
@@ -62,11 +64,17 @@ const _data = {
 };
 
 type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
-  items?: NavGroup[];
+  access?: AccessContext | null;
   planLabel?: string | null;
+  user: { name: string; email: string; avatar: string; role: UserRole };
+  notificationPreferences: NotificationPreferenceView;
 };
 
-export function AppSidebar({ items = sidebarItems, planLabel, ...props }: AppSidebarProps) {
+export function AppSidebar({ access, planLabel, user, notificationPreferences, ...props }: AppSidebarProps) {
+  // El filtrado por rol/plan se hace en el cliente para no serializar los
+  // iconos (componentes) a través del límite servidor → cliente.
+  const items = access ? filterSidebarItems(sidebarItems, access) : sidebarItems;
+
   const { sidebarVariant, sidebarCollapsible, isSynced } = usePreferencesStore(
     useShallow((s) => ({
       sidebarVariant: s.sidebarVariant,
@@ -84,7 +92,7 @@ export function AppSidebar({ items = sidebarItems, planLabel, ...props }: AppSid
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link prefetch={false} href="/dashboard/default">
+              <Link prefetch={false} href="/dashboard">
                 <Command />
                 <span className="font-semibold text-base">{APP_CONFIG.name}</span>
               </Link>
@@ -107,8 +115,7 @@ export function AppSidebar({ items = sidebarItems, planLabel, ...props }: AppSid
         {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>
-        <SidebarSupportCard />
-        <NavUser user={rootUser} />
+        <NavUser user={user} planLabel={planLabel ?? null} notificationPreferences={notificationPreferences} />
       </SidebarFooter>
     </Sidebar>
   );

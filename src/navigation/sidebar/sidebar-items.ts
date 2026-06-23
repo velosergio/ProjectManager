@@ -2,22 +2,14 @@ import {
   Banknote,
   Calendar,
   ChartBar,
-  Fingerprint,
-  Forklift,
   Gauge,
   GraduationCap,
   Kanban,
   LayoutDashboard,
-  ListTodo,
   Lock,
   type LucideIcon,
-  Mail,
-  MessageSquare,
   ReceiptText,
-  Server,
   ShieldCheck,
-  ShoppingBag,
-  SquareArrowUpRight,
   Users,
 } from "lucide-react";
 
@@ -88,9 +80,9 @@ export const sidebarItems: NavGroup[] = [
     label: "Dashboards",
     items: [
       {
-        id: "default",
-        title: "Default",
-        url: "/dashboard/default",
+        id: "panel",
+        title: "Panel",
+        url: "/dashboard",
         icon: LayoutDashboard,
       },
       {
@@ -114,35 +106,10 @@ export const sidebarItems: NavGroup[] = [
         requiredFeature: "executiveDashboard",
       },
       {
-        id: "productivity",
-        title: "Productivity",
-        url: "/dashboard/productivity",
-        icon: ListTodo,
-      },
-      {
-        id: "ecommerce",
-        title: "E-commerce",
-        url: "/dashboard/ecommerce",
-        icon: ShoppingBag,
-      },
-      {
         id: "academy",
         title: "Academy",
         url: "/dashboard/academy",
         icon: GraduationCap,
-      },
-      {
-        id: "logistics",
-        title: "Logistics",
-        url: "/dashboard/logistics",
-        icon: Forklift,
-      },
-      {
-        id: "infrastructure",
-        title: "Infrastructure",
-        url: "/dashboard/infrastructure",
-        icon: Server,
-        badge: "new",
       },
     ],
   },
@@ -150,18 +117,6 @@ export const sidebarItems: NavGroup[] = [
     id: 2,
     label: "Pages",
     items: [
-      {
-        id: "email",
-        title: "Email",
-        url: "/dashboard/mail",
-        icon: Mail,
-      },
-      {
-        id: "chat",
-        title: "Chat",
-        url: "/dashboard/chat",
-        icon: MessageSquare,
-      },
       {
         id: "calendar",
         title: "Calendar",
@@ -191,45 +146,6 @@ export const sidebarItems: NavGroup[] = [
         title: "Roles",
         url: "/dashboard/roles",
         icon: Lock,
-      },
-      {
-        id: "authentication",
-        title: "Autenticación",
-        icon: Fingerprint,
-        subItems: [
-          { id: "auth-login-v1", title: "Iniciar sesión", url: "/auth/v1/login", newTab: true },
-          { id: "auth-register-v1", title: "Crear cuenta", url: "/auth/v1/register", newTab: true },
-        ],
-      },
-    ],
-  },
-  {
-    id: 3,
-    label: "Legacy",
-    items: [
-      {
-        id: "legacy-dashboards",
-        title: "Dashboards",
-        subItems: [
-          { id: "legacy-default", title: "Default V1", url: "/dashboard/default-v1" },
-          { id: "legacy-crm", title: "CRM V1", url: "/dashboard/crm-v1" },
-          { id: "legacy-finance", title: "Finance V1", url: "/dashboard/finance-v1" },
-          { id: "legacy-analytics", title: "Analytics V1", url: "/dashboard/analytics-v1" },
-        ],
-      },
-    ],
-  },
-  {
-    id: 4,
-    label: "Misc",
-    items: [
-      {
-        id: "others",
-        title: "Others",
-        url: "/dashboard/coming-soon",
-        icon: SquareArrowUpRight,
-        badge: "soon",
-        disabled: true,
       },
     ],
   },

@@ -56,7 +56,7 @@ async function submitRegistration(data: z.infer<typeof formSchema>, router: Retu
   }
 
   toast.success("Cuenta creada correctamente.");
-  router.push("/dashboard/default");
+  router.push("/dashboard");
   router.refresh();
 }
 
