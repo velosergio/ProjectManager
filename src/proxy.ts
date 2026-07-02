@@ -6,8 +6,10 @@ import { authConfig } from "@/lib/auth.config";
 const { auth } = NextAuth(authConfig);
 
 /** Rutas accesibles sin sesión. `/api/auth/*` se excluye vía `config.matcher`. */
+const PUBLIC_ROUTES = new Set(["/", "/login", "/register", "/forgot", "/reset"]);
+
 function isPublicRoute(pathname: string): boolean {
-  return pathname === "/" || pathname.startsWith("/auth");
+  return PUBLIC_ROUTES.has(pathname);
 }
 
 export default auth((req) => {

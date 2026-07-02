@@ -1,9 +1,5 @@
 import {
-  Banknote,
   Calendar,
-  ChartBar,
-  Gauge,
-  GraduationCap,
   Kanban,
   LayoutDashboard,
   Lock,
@@ -84,32 +80,6 @@ export const sidebarItems: NavGroup[] = [
         title: "Panel",
         url: "/dashboard",
         icon: LayoutDashboard,
-      },
-      {
-        id: "crm",
-        title: "CRM",
-        url: "/dashboard/crm",
-        icon: ChartBar,
-      },
-      {
-        id: "finance",
-        title: "Finance",
-        url: "/dashboard/finance",
-        icon: Banknote,
-      },
-      {
-        id: "analytics",
-        title: "Analytics",
-        url: "/dashboard/analytics",
-        icon: Gauge,
-        // Tablero ejecutivo: solo en planes que incluyen la feature.
-        requiredFeature: "executiveDashboard",
-      },
-      {
-        id: "academy",
-        title: "Academy",
-        url: "/dashboard/academy",
-        icon: GraduationCap,
       },
     ],
   },

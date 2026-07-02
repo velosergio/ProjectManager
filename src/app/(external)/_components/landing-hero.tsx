@@ -43,7 +43,7 @@ export function LandingHero() {
 
         <m.div variants={item} className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
-            href="/auth/v1/register"
+            href="/register"
             className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-500 to-fuchsia-500 px-6 py-3 font-medium text-white shadow-[0_0_30px_rgba(168,85,247,0.45)] transition-transform hover:scale-[1.03]"
           >
             Empezar gratis

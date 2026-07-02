@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan
-at specs/003-settings-modal/plan.md
+at specs/004-unified-dashboard/plan.md
 <!-- SPECKIT END -->
 
 ## Idioma
@@ -85,7 +85,8 @@ Doctor. Husky + lint-staged corren en pre-commit; no usar `--no-verify` sin auto
 **Colocación por feature.** Cada ruta vive en `src/app/` y guarda sus piezas locales en `_components/`
 (prefijo `_` = carpeta privada, no es ruta). Grupos de rutas:
 
-- `src/app/(main)/auth/v1/` — login y registro.
+- `src/app/(main)/{login,register,forgot,reset}/` — páginas de autenticación (URLs limpias en la raíz).
+  Sus formularios compartidos viven en `src/app/(main)/_components/auth/`.
 - `src/app/(main)/dashboard/` — app autenticada; layout monta el sidebar (`_components/sidebar/`).
   `(legacy)` y la mayoría de subrutas son demos de la plantilla.
 - `src/app/(external)/` — páginas públicas/landing.

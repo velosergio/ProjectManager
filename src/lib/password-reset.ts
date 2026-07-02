@@ -38,7 +38,7 @@ export async function requestPasswordReset(email: string, origin: string): Promi
   }
 
   const token = await createPasswordResetToken(user.id);
-  const link = `${origin}/auth/v1/reset?token=${token}`;
+  const link = `${origin}/reset?token=${token}`;
   await sendMail({
     to: email,
     subject: "Restablece tu contraseña",

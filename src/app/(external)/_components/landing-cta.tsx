@@ -22,14 +22,14 @@ export function LandingCta() {
             </p>
             <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link
-                href="/auth/v1/register"
+                href="/register"
                 className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 font-medium text-violet-700 transition-transform hover:scale-[1.03]"
               >
                 Crear cuenta gratis
                 <ArrowRight className="size-4" />
               </Link>
               <Link
-                href="/auth/v1/login"
+                href="/login"
                 className="inline-flex items-center gap-2 rounded-xl border border-white/25 bg-white/5 px-6 py-3 font-medium text-white transition-colors hover:bg-white/10"
               >
                 Iniciar sesión

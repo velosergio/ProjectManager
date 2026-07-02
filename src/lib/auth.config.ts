@@ -13,7 +13,7 @@ export const authConfig = {
   // Las credenciales (usuario/contraseña) requieren estrategia JWT.
   session: { strategy: "jwt" },
   pages: {
-    signIn: "/auth/v1/login",
+    signIn: "/login",
   },
   // Los providers se declaran en la instancia completa (`auth.ts`); el middleware no autentica,
   // solo verifica la sesión existente.

@@ -1,0 +1,1058 @@
+[
+  {
+    "id": "OP-1842",
+    "account": "Asteron Bioworks",
+    "stage": "Propuesta enviada",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$42,000"
+  },
+  {
+    "id": "OP-1841",
+    "account": "BlueHaven Systems",
+    "stage": "Descubrimiento",
+    "priority": 1,
+    "health": "En pausa",
+    "value": "$18,500"
+  },
+  {
+    "id": "OP-1840",
+    "account": "Cinder Health",
+    "stage": "Negociación",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$63,000"
+  },
+  {
+    "id": "OP-1839",
+    "account": "Drift Manufacturing",
+    "stage": "Calificada",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$26,400"
+  },
+  {
+    "id": "OP-1838",
+    "account": "Everline Freight",
+    "stage": "Propuesta enviada",
+    "priority": 1,
+    "health": "Requiere revisión",
+    "value": "$58,900"
+  },
+  {
+    "id": "OP-1837",
+    "account": "Fieldstone Capital",
+    "stage": "Descubrimiento",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$31,200"
+  },
+  {
+    "id": "OP-1836",
+    "account": "Granite Studios",
+    "stage": "Negociación",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$15,600"
+  },
+  {
+    "id": "OP-1835",
+    "account": "Halcyon Dynamics",
+    "stage": "Calificada",
+    "priority": 1,
+    "health": "En pausa",
+    "value": "$47,900"
+  },
+  {
+    "id": "OP-1834",
+    "account": "Ironcrest Ventures",
+    "stage": "Propuesta enviada",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$52,400"
+  },
+  {
+    "id": "OP-1833",
+    "account": "Juniper Infrastructure",
+    "stage": "Descubrimiento",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$22,800"
+  },
+  {
+    "id": "OP-1832",
+    "account": "Kestrel Commerce",
+    "stage": "Negociación",
+    "priority": 1,
+    "health": "Requiere revisión",
+    "value": "$19,300"
+  },
+  {
+    "id": "OP-1831",
+    "account": "Lattice Clinical",
+    "stage": "Calificada",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$68,500"
+  },
+  {
+    "id": "OP-1830",
+    "account": "Mariner Foods",
+    "stage": "Propuesta enviada",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$36,100"
+  },
+  {
+    "id": "OP-1829",
+    "account": "Northfield Energy",
+    "stage": "Descubrimiento",
+    "priority": 1,
+    "health": "En pausa",
+    "value": "$27,400"
+  },
+  {
+    "id": "OP-1828",
+    "account": "Oakwell Networks",
+    "stage": "Negociación",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$24,700"
+  },
+  {
+    "id": "OP-1827",
+    "account": "Palisade Software",
+    "stage": "Calificada",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$33,400"
+  },
+  {
+    "id": "OP-1826",
+    "account": "Quarry Aerospace",
+    "stage": "Propuesta enviada",
+    "priority": 1,
+    "health": "Requiere revisión",
+    "value": "$71,800"
+  },
+  {
+    "id": "OP-1825",
+    "account": "Redwood Devices",
+    "stage": "Descubrimiento",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$29,200"
+  },
+  {
+    "id": "OP-1824",
+    "account": "Silverline Research",
+    "stage": "Negociación",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$44,800"
+  },
+  {
+    "id": "OP-1823",
+    "account": "TrueNorth Services",
+    "stage": "Calificada",
+    "priority": 1,
+    "health": "En pausa",
+    "value": "$38,100"
+  },
+  {
+    "id": "OP-1822",
+    "account": "Union Operations",
+    "stage": "Propuesta enviada",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$26,750"
+  },
+  {
+    "id": "OP-1821",
+    "account": "Vale Design",
+    "stage": "Descubrimiento",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$54,900"
+  },
+  {
+    "id": "OP-1820",
+    "account": "Westbridge Logistics",
+    "stage": "Negociación",
+    "priority": 1,
+    "health": "Requiere revisión",
+    "value": "$60,700"
+  },
+  {
+    "id": "OP-1819",
+    "account": "Yellowtail Analytics",
+    "stage": "Calificada",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$17,100"
+  },
+  {
+    "id": "OP-1818",
+    "account": "Zephyr Mobility",
+    "stage": "Propuesta enviada",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$45,500"
+  },
+  {
+    "id": "OP-1817",
+    "account": "Bayshore Labs",
+    "stage": "Descubrimiento",
+    "priority": 1,
+    "health": "En pausa",
+    "value": "$28,600"
+  },
+  {
+    "id": "OP-1816",
+    "account": "Clearpoint Partners",
+    "stage": "Negociación",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$39,100"
+  },
+  {
+    "id": "OP-1815",
+    "account": "Dovetail Supply",
+    "stage": "Calificada",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$64,200"
+  },
+  {
+    "id": "OP-1814",
+    "account": "Elmwood Works",
+    "stage": "Propuesta enviada",
+    "priority": 1,
+    "health": "Requiere revisión",
+    "value": "$20,800"
+  },
+  {
+    "id": "OP-1813",
+    "account": "Foxglove Holdings",
+    "stage": "Descubrimiento",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$57,400"
+  },
+  {
+    "id": "OP-1812",
+    "account": "Glenrock Therapeutics",
+    "stage": "Negociación",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$48,300"
+  },
+  {
+    "id": "OP-1811",
+    "account": "Highspire Materials",
+    "stage": "Calificada",
+    "priority": 1,
+    "health": "En pausa",
+    "value": "$35,200"
+  },
+  {
+    "id": "OP-1810",
+    "account": "Ivory Bioworks",
+    "stage": "Propuesta enviada",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$61,500"
+  },
+  {
+    "id": "OP-1809",
+    "account": "Kingswell Systems",
+    "stage": "Descubrimiento",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$42,000"
+  },
+  {
+    "id": "OP-1808",
+    "account": "Lakefront Health",
+    "stage": "Negociación",
+    "priority": 1,
+    "health": "Requiere revisión",
+    "value": "$18,500"
+  },
+  {
+    "id": "OP-1807",
+    "account": "Moorland Manufacturing",
+    "stage": "Calificada",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$63,000"
+  },
+  {
+    "id": "OP-1806",
+    "account": "Asteron Freight",
+    "stage": "Propuesta enviada",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$26,400"
+  },
+  {
+    "id": "OP-1805",
+    "account": "BlueHaven Capital",
+    "stage": "Descubrimiento",
+    "priority": 1,
+    "health": "En pausa",
+    "value": "$58,900"
+  },
+  {
+    "id": "OP-1804",
+    "account": "Cinder Studios",
+    "stage": "Negociación",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$31,200"
+  },
+  {
+    "id": "OP-1803",
+    "account": "Drift Dynamics",
+    "stage": "Calificada",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$15,600"
+  },
+  {
+    "id": "OP-1802",
+    "account": "Everline Ventures",
+    "stage": "Propuesta enviada",
+    "priority": 1,
+    "health": "Requiere revisión",
+    "value": "$47,900"
+  },
+  {
+    "id": "OP-1801",
+    "account": "Fieldstone Infrastructure",
+    "stage": "Descubrimiento",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$52,400"
+  },
+  {
+    "id": "OP-1800",
+    "account": "Granite Commerce",
+    "stage": "Negociación",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$22,800"
+  },
+  {
+    "id": "OP-1799",
+    "account": "Halcyon Clinical",
+    "stage": "Calificada",
+    "priority": 1,
+    "health": "En pausa",
+    "value": "$19,300"
+  },
+  {
+    "id": "OP-1798",
+    "account": "Ironcrest Foods",
+    "stage": "Propuesta enviada",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$68,500"
+  },
+  {
+    "id": "OP-1797",
+    "account": "Juniper Energy",
+    "stage": "Descubrimiento",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$36,100"
+  },
+  {
+    "id": "OP-1796",
+    "account": "Kestrel Networks",
+    "stage": "Negociación",
+    "priority": 1,
+    "health": "Requiere revisión",
+    "value": "$27,400"
+  },
+  {
+    "id": "OP-1795",
+    "account": "Lattice Software",
+    "stage": "Calificada",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$24,700"
+  },
+  {
+    "id": "OP-1794",
+    "account": "Mariner Aerospace",
+    "stage": "Propuesta enviada",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$33,400"
+  },
+  {
+    "id": "OP-1793",
+    "account": "Northfield Devices",
+    "stage": "Descubrimiento",
+    "priority": 1,
+    "health": "En pausa",
+    "value": "$71,800"
+  },
+  {
+    "id": "OP-1792",
+    "account": "Oakwell Research",
+    "stage": "Negociación",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$29,200"
+  },
+  {
+    "id": "OP-1791",
+    "account": "Palisade Services",
+    "stage": "Calificada",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$44,800"
+  },
+  {
+    "id": "OP-1790",
+    "account": "Quarry Operations",
+    "stage": "Propuesta enviada",
+    "priority": 1,
+    "health": "Requiere revisión",
+    "value": "$38,100"
+  },
+  {
+    "id": "OP-1789",
+    "account": "Redwood Design",
+    "stage": "Descubrimiento",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$26,750"
+  },
+  {
+    "id": "OP-1788",
+    "account": "Silverline Logistics",
+    "stage": "Negociación",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$54,900"
+  },
+  {
+    "id": "OP-1787",
+    "account": "TrueNorth Analytics",
+    "stage": "Calificada",
+    "priority": 1,
+    "health": "En pausa",
+    "value": "$60,700"
+  },
+  {
+    "id": "OP-1786",
+    "account": "Union Mobility",
+    "stage": "Propuesta enviada",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$17,100"
+  },
+  {
+    "id": "OP-1785",
+    "account": "Vale Labs",
+    "stage": "Descubrimiento",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$45,500"
+  },
+  {
+    "id": "OP-1784",
+    "account": "Westbridge Partners",
+    "stage": "Negociación",
+    "priority": 1,
+    "health": "Requiere revisión",
+    "value": "$28,600"
+  },
+  {
+    "id": "OP-1783",
+    "account": "Yellowtail Supply",
+    "stage": "Calificada",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$39,100"
+  },
+  {
+    "id": "OP-1782",
+    "account": "Zephyr Works",
+    "stage": "Propuesta enviada",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$64,200"
+  },
+  {
+    "id": "OP-1781",
+    "account": "Bayshore Holdings",
+    "stage": "Descubrimiento",
+    "priority": 1,
+    "health": "En pausa",
+    "value": "$20,800"
+  },
+  {
+    "id": "OP-1780",
+    "account": "Clearpoint Therapeutics",
+    "stage": "Negociación",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$57,400"
+  },
+  {
+    "id": "OP-1779",
+    "account": "Dovetail Materials",
+    "stage": "Calificada",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$48,300"
+  },
+  {
+    "id": "OP-1778",
+    "account": "Elmwood Bioworks",
+    "stage": "Propuesta enviada",
+    "priority": 1,
+    "health": "Requiere revisión",
+    "value": "$35,200"
+  },
+  {
+    "id": "OP-1777",
+    "account": "Foxglove Systems",
+    "stage": "Descubrimiento",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$61,500"
+  },
+  {
+    "id": "OP-1776",
+    "account": "Glenrock Health",
+    "stage": "Negociación",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$42,000"
+  },
+  {
+    "id": "OP-1775",
+    "account": "Highspire Manufacturing",
+    "stage": "Calificada",
+    "priority": 1,
+    "health": "En pausa",
+    "value": "$18,500"
+  },
+  {
+    "id": "OP-1774",
+    "account": "Ivory Freight",
+    "stage": "Propuesta enviada",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$63,000"
+  },
+  {
+    "id": "OP-1773",
+    "account": "Kingswell Capital",
+    "stage": "Descubrimiento",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$26,400"
+  },
+  {
+    "id": "OP-1772",
+    "account": "Lakefront Studios",
+    "stage": "Negociación",
+    "priority": 1,
+    "health": "Requiere revisión",
+    "value": "$58,900"
+  },
+  {
+    "id": "OP-1771",
+    "account": "Moorland Dynamics",
+    "stage": "Calificada",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$31,200"
+  },
+  {
+    "id": "OP-1770",
+    "account": "Asteron Ventures",
+    "stage": "Propuesta enviada",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$15,600"
+  },
+  {
+    "id": "OP-1769",
+    "account": "BlueHaven Infrastructure",
+    "stage": "Descubrimiento",
+    "priority": 1,
+    "health": "En pausa",
+    "value": "$47,900"
+  },
+  {
+    "id": "OP-1768",
+    "account": "Cinder Commerce",
+    "stage": "Negociación",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$52,400"
+  },
+  {
+    "id": "OP-1767",
+    "account": "Drift Clinical",
+    "stage": "Calificada",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$22,800"
+  },
+  {
+    "id": "OP-1766",
+    "account": "Everline Foods",
+    "stage": "Propuesta enviada",
+    "priority": 1,
+    "health": "Requiere revisión",
+    "value": "$19,300"
+  },
+  {
+    "id": "OP-1765",
+    "account": "Fieldstone Energy",
+    "stage": "Descubrimiento",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$68,500"
+  },
+  {
+    "id": "OP-1764",
+    "account": "Granite Networks",
+    "stage": "Negociación",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$36,100"
+  },
+  {
+    "id": "OP-1763",
+    "account": "Halcyon Software",
+    "stage": "Calificada",
+    "priority": 1,
+    "health": "En pausa",
+    "value": "$27,400"
+  },
+  {
+    "id": "OP-1762",
+    "account": "Ironcrest Aerospace",
+    "stage": "Propuesta enviada",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$24,700"
+  },
+  {
+    "id": "OP-1761",
+    "account": "Juniper Devices",
+    "stage": "Descubrimiento",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$33,400"
+  },
+  {
+    "id": "OP-1760",
+    "account": "Kestrel Research",
+    "stage": "Negociación",
+    "priority": 1,
+    "health": "Requiere revisión",
+    "value": "$71,800"
+  },
+  {
+    "id": "OP-1759",
+    "account": "Lattice Services",
+    "stage": "Calificada",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$29,200"
+  },
+  {
+    "id": "OP-1758",
+    "account": "Mariner Operations",
+    "stage": "Propuesta enviada",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$44,800"
+  },
+  {
+    "id": "OP-1757",
+    "account": "Northfield Design",
+    "stage": "Descubrimiento",
+    "priority": 1,
+    "health": "En pausa",
+    "value": "$38,100"
+  },
+  {
+    "id": "OP-1756",
+    "account": "Oakwell Logistics",
+    "stage": "Negociación",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$26,750"
+  },
+  {
+    "id": "OP-1755",
+    "account": "Palisade Analytics",
+    "stage": "Calificada",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$54,900"
+  },
+  {
+    "id": "OP-1754",
+    "account": "Quarry Mobility",
+    "stage": "Propuesta enviada",
+    "priority": 1,
+    "health": "Requiere revisión",
+    "value": "$60,700"
+  },
+  {
+    "id": "OP-1753",
+    "account": "Redwood Labs",
+    "stage": "Descubrimiento",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$17,100"
+  },
+  {
+    "id": "OP-1752",
+    "account": "Silverline Partners",
+    "stage": "Negociación",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$45,500"
+  },
+  {
+    "id": "OP-1751",
+    "account": "TrueNorth Supply",
+    "stage": "Calificada",
+    "priority": 1,
+    "health": "En pausa",
+    "value": "$28,600"
+  },
+  {
+    "id": "OP-1750",
+    "account": "Union Works",
+    "stage": "Propuesta enviada",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$39,100"
+  },
+  {
+    "id": "OP-1749",
+    "account": "Vale Holdings",
+    "stage": "Descubrimiento",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$64,200"
+  },
+  {
+    "id": "OP-1748",
+    "account": "Westbridge Therapeutics",
+    "stage": "Negociación",
+    "priority": 1,
+    "health": "Requiere revisión",
+    "value": "$20,800"
+  },
+  {
+    "id": "OP-1747",
+    "account": "Yellowtail Materials",
+    "stage": "Calificada",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$57,400"
+  },
+  {
+    "id": "OP-1746",
+    "account": "Zephyr Bioworks",
+    "stage": "Propuesta enviada",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$48,300"
+  },
+  {
+    "id": "OP-1745",
+    "account": "Bayshore Systems",
+    "stage": "Descubrimiento",
+    "priority": 1,
+    "health": "En pausa",
+    "value": "$35,200"
+  },
+  {
+    "id": "OP-1744",
+    "account": "Clearpoint Health",
+    "stage": "Negociación",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$61,500"
+  },
+  {
+    "id": "OP-1743",
+    "account": "Dovetail Manufacturing",
+    "stage": "Calificada",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$42,000"
+  },
+  {
+    "id": "OP-1742",
+    "account": "Elmwood Freight",
+    "stage": "Propuesta enviada",
+    "priority": 1,
+    "health": "Requiere revisión",
+    "value": "$18,500"
+  },
+  {
+    "id": "OP-1741",
+    "account": "Foxglove Capital",
+    "stage": "Descubrimiento",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$63,000"
+  },
+  {
+    "id": "OP-1740",
+    "account": "Glenrock Studios",
+    "stage": "Negociación",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$26,400"
+  },
+  {
+    "id": "OP-1739",
+    "account": "Highspire Dynamics",
+    "stage": "Calificada",
+    "priority": 1,
+    "health": "En pausa",
+    "value": "$58,900"
+  },
+  {
+    "id": "OP-1738",
+    "account": "Ivory Ventures",
+    "stage": "Propuesta enviada",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$31,200"
+  },
+  {
+    "id": "OP-1737",
+    "account": "Kingswell Infrastructure",
+    "stage": "Descubrimiento",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$15,600"
+  },
+  {
+    "id": "OP-1736",
+    "account": "Lakefront Commerce",
+    "stage": "Negociación",
+    "priority": 1,
+    "health": "Requiere revisión",
+    "value": "$47,900"
+  },
+  {
+    "id": "OP-1735",
+    "account": "Moorland Clinical",
+    "stage": "Calificada",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$52,400"
+  },
+  {
+    "id": "OP-1734",
+    "account": "Asteron Foods",
+    "stage": "Propuesta enviada",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$22,800"
+  },
+  {
+    "id": "OP-1733",
+    "account": "BlueHaven Energy",
+    "stage": "Descubrimiento",
+    "priority": 1,
+    "health": "En pausa",
+    "value": "$19,300"
+  },
+  {
+    "id": "OP-1732",
+    "account": "Cinder Networks",
+    "stage": "Negociación",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$68,500"
+  },
+  {
+    "id": "OP-1731",
+    "account": "Drift Software",
+    "stage": "Calificada",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$36,100"
+  },
+  {
+    "id": "OP-1730",
+    "account": "Everline Aerospace",
+    "stage": "Propuesta enviada",
+    "priority": 1,
+    "health": "Requiere revisión",
+    "value": "$27,400"
+  },
+  {
+    "id": "OP-1729",
+    "account": "Fieldstone Devices",
+    "stage": "Descubrimiento",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$24,700"
+  },
+  {
+    "id": "OP-1728",
+    "account": "Granite Research",
+    "stage": "Negociación",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$33,400"
+  },
+  {
+    "id": "OP-1727",
+    "account": "Halcyon Services",
+    "stage": "Calificada",
+    "priority": 1,
+    "health": "En pausa",
+    "value": "$71,800"
+  },
+  {
+    "id": "OP-1726",
+    "account": "Ironcrest Operations",
+    "stage": "Propuesta enviada",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$29,200"
+  },
+  {
+    "id": "OP-1725",
+    "account": "Juniper Design",
+    "stage": "Descubrimiento",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$44,800"
+  },
+  {
+    "id": "OP-1724",
+    "account": "Kestrel Logistics",
+    "stage": "Negociación",
+    "priority": 1,
+    "health": "Requiere revisión",
+    "value": "$38,100"
+  },
+  {
+    "id": "OP-1723",
+    "account": "Lattice Analytics",
+    "stage": "Calificada",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$26,750"
+  },
+  {
+    "id": "OP-1722",
+    "account": "Mariner Mobility",
+    "stage": "Propuesta enviada",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$54,900"
+  },
+  {
+    "id": "OP-1721",
+    "account": "Northfield Labs",
+    "stage": "Descubrimiento",
+    "priority": 1,
+    "health": "En pausa",
+    "value": "$60,700"
+  },
+  {
+    "id": "OP-1720",
+    "account": "Oakwell Partners",
+    "stage": "Negociación",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$17,100"
+  },
+  {
+    "id": "OP-1719",
+    "account": "Palisade Supply",
+    "stage": "Calificada",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$45,500"
+  },
+  {
+    "id": "OP-1718",
+    "account": "Quarry Works",
+    "stage": "Propuesta enviada",
+    "priority": 1,
+    "health": "Requiere revisión",
+    "value": "$28,600"
+  },
+  {
+    "id": "OP-1717",
+    "account": "Redwood Holdings",
+    "stage": "Descubrimiento",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$39,100"
+  },
+  {
+    "id": "OP-1716",
+    "account": "Silverline Therapeutics",
+    "stage": "Negociación",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$64,200"
+  },
+  {
+    "id": "OP-1715",
+    "account": "TrueNorth Materials",
+    "stage": "Calificada",
+    "priority": 1,
+    "health": "En pausa",
+    "value": "$20,800"
+  },
+  {
+    "id": "OP-1714",
+    "account": "Union Bioworks",
+    "stage": "Propuesta enviada",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$57,400"
+  },
+  {
+    "id": "OP-1713",
+    "account": "Vale Systems",
+    "stage": "Descubrimiento",
+    "priority": 1,
+    "health": "En riesgo",
+    "value": "$48,300"
+  },
+  {
+    "id": "OP-1712",
+    "account": "Westbridge Health",
+    "stage": "Negociación",
+    "priority": 1,
+    "health": "Requiere revisión",
+    "value": "$35,200"
+  },
+  {
+    "id": "OP-1711",
+    "account": "Yellowtail Manufacturing",
+    "stage": "Calificada",
+    "priority": 1,
+    "health": "En curso",
+    "value": "$61,500"
+  }
+]

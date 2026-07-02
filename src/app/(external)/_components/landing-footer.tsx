@@ -12,8 +12,8 @@ const FOOTER_LINKS = [
   {
     title: "Cuenta",
     links: [
-      { href: "/auth/v1/login", label: "Iniciar sesión" },
-      { href: "/auth/v1/register", label: "Crear cuenta" },
+      { href: "/login", label: "Iniciar sesión" },
+      { href: "/register", label: "Crear cuenta" },
     ],
   },
 ];

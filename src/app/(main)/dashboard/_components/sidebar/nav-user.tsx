@@ -92,7 +92,7 @@ export function NavUser({ user, planLabel, notificationPreferences }: NavUserPro
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => void signOut({ callbackUrl: "/auth/v1/login" })}>
+            <DropdownMenuItem onClick={() => void signOut({ callbackUrl: "/login" })}>
               <LogOut />
               Cerrar sesión
             </DropdownMenuItem>

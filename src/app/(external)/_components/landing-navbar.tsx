@@ -40,13 +40,13 @@ export function LandingNavbar() {
 
           <div className="hidden items-center gap-2 md:flex">
             <Link
-              href="/auth/v1/login"
+              href="/login"
               className="rounded-lg px-3 py-1.5 text-sm text-zinc-200 transition-colors hover:text-white"
             >
               Iniciar sesión
             </Link>
             <Link
-              href="/auth/v1/register"
+              href="/register"
               className="rounded-lg bg-gradient-to-r from-violet-500 to-fuchsia-500 px-4 py-1.5 font-medium text-sm text-white shadow-[0_0_20px_rgba(168,85,247,0.45)] transition-transform hover:scale-[1.03]"
             >
               Crear cuenta
@@ -80,14 +80,14 @@ export function LandingNavbar() {
             ))}
             <div className="my-1 h-px bg-white/10" />
             <Link
-              href="/auth/v1/login"
+              href="/login"
               onClick={() => setOpen(false)}
               className="rounded-lg px-3 py-2 text-sm text-zinc-200 transition-colors hover:bg-white/5"
             >
               Iniciar sesión
             </Link>
             <Link
-              href="/auth/v1/register"
+              href="/register"
               onClick={() => setOpen(false)}
               className="rounded-lg bg-gradient-to-r from-violet-500 to-fuchsia-500 px-3 py-2 text-center font-medium text-sm text-white"
             >

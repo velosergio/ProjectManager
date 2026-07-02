@@ -143,7 +143,7 @@ export function LandingPricing() {
                 </p>
 
                 <Link
-                  href="/auth/v1/register"
+                  href="/register"
                   className={`mt-6 inline-flex items-center justify-center rounded-xl px-4 py-2.5 font-medium text-sm transition-transform hover:scale-[1.02] ${
                     plan.highlighted
                       ? "bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white shadow-[0_0_24px_rgba(168,85,247,0.45)]"
