@@ -91,14 +91,13 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
-# Prisma 7: el cliente generado ya viaja dentro de .next/standalone. Copiamos
-# además el schema + migraciones, la config (aporta la URL del datasource) y el
-# CLI de Prisma con sus dependencias para `migrate deploy` en el arranque.
+# Prisma 7: schema, migraciones y config. Instalamos prisma + dotenv con el árbol
+# completo de dependencias (effect, c12, @prisma/config, …) para cargar
+# prisma.config.ts; el binario del CLI corre vía instalación global.
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /app/prisma.config.ts ./prisma.config.ts
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma ./node_modules/@prisma
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/prisma ./node_modules/prisma
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/dotenv ./node_modules/dotenv
+RUN npm install --no-save --package-lock=false prisma@7.8.0 dotenv@17.4.2 \
+  && chown -R nextjs:nodejs node_modules
 
 # Soporte para `npm run mango` desde la consola del contenedor (crear el super
 # usuario). El CLI es TypeScript, así que necesita: tsx (global, es devDep y no
