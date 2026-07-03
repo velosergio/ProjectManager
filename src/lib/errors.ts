@@ -36,3 +36,20 @@ export class FeatureNotInPlanError extends Error {
     this.name = "FeatureNotInPlanError";
   }
 }
+
+/// La entidad solicitada no existe (o pertenece a otro tenant, que para el
+/// solicitante es indistinguible).
+export class NotFoundError extends Error {
+  constructor(message = "El recurso solicitado no existe.") {
+    super(message);
+    this.name = "NotFoundError";
+  }
+}
+
+/// Conflicto de unicidad de nombre dentro del tenant (etiquetas, tipos).
+export class DuplicateNameError extends Error {
+  constructor(message = "Ya existe un elemento con ese nombre.") {
+    super(message);
+    this.name = "DuplicateNameError";
+  }
+}

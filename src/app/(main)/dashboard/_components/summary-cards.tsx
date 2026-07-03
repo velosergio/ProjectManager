@@ -1,17 +1,39 @@
-import { ArrowRight, Clock3, Focus, TrendingUp } from "lucide-react";
+import { Clock3, FolderKanban, TrendingUp } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getPanelSummary } from "@/lib/projects/queries";
+import { getTenantDb } from "@/lib/tenant-db-session";
 
-const summaryCards = [
-  { title: "Hoy", value: "4", description: "tareas programadas", icon: Clock3 },
-  { title: "Esta semana", value: "68%", description: "de progreso", icon: TrendingUp },
-  { title: "Concentración", value: "Trabajo profundo", description: "2 horas restantes", icon: Focus },
-] as const;
+/// Tarjetas de resumen del panel con cifras reales (FR-016): tareas de hoy y
+/// progreso semanal (alcance personal) y proyectos en curso de la organización.
+export async function SummaryCards({ userId }: { userId: string }) {
+  const db = await getTenantDb();
+  const summary = await getPanelSummary(db, userId);
 
-export function SummaryCards() {
+  const cards = [
+    {
+      title: "Hoy",
+      value: String(summary.tasksToday),
+      description: summary.tasksToday === 1 ? "tarea programada" : "tareas programadas",
+      icon: Clock3,
+    },
+    {
+      title: "Esta semana",
+      value: `${summary.weeklyProgressPct}%`,
+      description: `${summary.weekDone} de ${summary.weekTotal} tareas finalizadas`,
+      icon: TrendingUp,
+    },
+    {
+      title: "Proyectos",
+      value: String(summary.activeProjects),
+      description: summary.activeProjects === 1 ? "proyecto en curso" : "proyectos en curso",
+      icon: FolderKanban,
+    },
+  ] as const;
+
   return (
     <div className="grid gap-4 md:grid-cols-3">
-      {summaryCards.map((item) => (
+      {cards.map((item) => (
         <Card key={item.title} className="shadow-xs">
           <CardHeader>
             <CardTitle>
@@ -26,10 +48,7 @@ export function SummaryCards() {
           <CardContent>
             <div className="flex flex-col gap-2">
               <div className="text-2xl leading-none tracking-tight">{item.value}</div>
-              <div className="flex items-center justify-between">
-                <p className="text-muted-foreground tabular-nums leading-none">{item.description}</p>
-                <ArrowRight className="size-4 text-muted-foreground" />
-              </div>
+              <p className="text-muted-foreground tabular-nums leading-none">{item.description}</p>
             </div>
           </CardContent>
         </Card>

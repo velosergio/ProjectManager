@@ -61,6 +61,24 @@ enum TaskStatus {
   DONE
 }
 
+/// Estado de un proyecto (alineado con el tablero Kanban de la FASE 3).
+/// UI: Pendiente / En proceso / En revisión / Finalizado / Archivado.
+enum ProjectStatus {
+  PENDING
+  IN_PROGRESS
+  IN_REVIEW
+  COMPLETED
+  ARCHIVED
+}
+
+/// Prioridad de un proyecto. UI: Baja / Media / Alta / Urgente.
+enum ProjectPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
 // =============================================================================
 // MULTITENANCY — Organización, planes y suscripciones
 // =============================================================================
@@ -82,6 +100,8 @@ model Tenant {
   tasks        Task[]
   files        FileAsset[]
   events       Event[]
+  tags         Tag[]
+  processTypes ProcessType[]
 
   @@map("tenants")
 }
@@ -154,6 +174,7 @@ model User {
   accounts               Account[]
   sessions               Session[]
   assignedTasks          Task[]
+  ownedProjects          Project[]            @relation("ProjectOwner")
   passwordResetTokens    PasswordResetToken[]
   notificationPreference NotificationPreference?
 
@@ -261,24 +282,71 @@ model Client {
 }
 
 model Project {
-  id          String   @id @default(cuid())
-  tenantId    String
-  clientId    String?
-  name        String
-  description String?  @db.Text
-  status      String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String          @id @default(cuid())
+  tenantId      String
+  clientId      String?
+  name          String
+  description   String?         @db.Text
+  status        ProjectStatus   @default(PENDING)
+  priority      ProjectPriority @default(MEDIUM)
+  /// Fecha de inicio del proyecto.
+  startDate     DateTime?
+  /// Fecha de cierre estimada; `endDate >= startDate` se valida en la capa Zod.
+  endDate       DateTime?
+  /// Responsable del proyecto; «sin asignar» si el usuario desaparece.
+  ownerId       String?
+  /// Tipo del catálogo del tenant; «sin tipo» si el tipo se elimina.
+  processTypeId String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
 
-  tenant    Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  client    Client?     @relation(fields: [clientId], references: [id], onDelete: SetNull)
-  processes Process[]
-  files     FileAsset[]
-  events    Event[]
+  tenant      Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  client      Client?      @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  owner       User?        @relation("ProjectOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  processType ProcessType? @relation(fields: [processTypeId], references: [id], onDelete: SetNull)
+  tags        Tag[]
+  processes   Process[]
+  files       FileAsset[]
+  events      Event[]
 
   @@index([tenantId])
+  @@index([tenantId, status])
   @@index([clientId])
+  @@index([ownerId])
+  @@index([processTypeId])
   @@map("projects")
+}
+
+/// Etiqueta propia de la organización para clasificar proyectos (FR-013).
+model Tag {
+  id        String   @id @default(cuid())
+  tenantId  String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant   Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  projects Project[]
+
+  @@unique([tenantId, name])
+  @@index([tenantId])
+  @@map("tags")
+}
+
+/// Tipo de proceso del catálogo de la organización (FR-021).
+model ProcessType {
+  id        String   @id @default(cuid())
+  tenantId  String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant   Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  projects Project[]
+
+  @@unique([tenantId, name])
+  @@index([tenantId])
+  @@map("process_types")
 }
 
 model Process {

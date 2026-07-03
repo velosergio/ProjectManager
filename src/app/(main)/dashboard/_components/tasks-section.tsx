@@ -1,87 +1,81 @@
-"use client";
+import Link from "next/link";
 
-import * as React from "react";
+import { Plus } from "lucide-react";
 
-import { Calendar1, Plus } from "lucide-react";
-
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
+import { getPanelTasks, type PanelTaskRange } from "@/lib/projects/queries";
+import { getTenantDb } from "@/lib/tenant-db-session";
 
-type Task = {
-  title: string;
-  tag: string;
-  time: string;
-  checked: boolean;
-};
+import { PanelFilterSelect } from "./panel-filter-select";
+import { PanelTasksList } from "./panel-tasks-list";
 
-const tasks: Task[] = [
-  { title: "Finalizar la hoja de ruta del Q2", tag: "Trabajo", time: "10:00 a. m.", checked: false },
-  { title: "Revisar actualizaciones del sistema de diseño", tag: "Diseño", time: "11:30 a. m.", checked: true },
-  { title: "Responder correos importantes", tag: "Administración", time: "2:00 p. m.", checked: false },
-  { title: "Planificar el contenido de la semana", tag: "Contenido", time: "4:30 p. m.", checked: false },
-  { title: "Preparar las notas de la reunión semanal", tag: "Planificación", time: "6:00 p. m.", checked: false },
+const RANGE_OPTIONS = [
+  { value: "today", label: "Hoy" },
+  { value: "tomorrow", label: "Mañana" },
+  { value: "week", label: "Esta semana" },
 ];
 
-export function TasksSection() {
-  const [items, setItems] = React.useState(tasks);
+function parseRange(value?: string): PanelTaskRange {
+  return value === "tomorrow" || value === "week" ? value : "today";
+}
+
+/// Sección «Tareas» del panel: tareas reales asignadas al usuario actual o sin
+/// responsable, según el filtro temporal (FR-015).
+export async function TasksSection({ userId, rangeParam }: { userId: string; rangeParam?: string }) {
+  const range = parseRange(rangeParam);
+  const db = await getTenantDb();
+  const tasks = await getPanelTasks(db, userId, range);
 
   return (
     <section className="flex flex-col gap-2">
       <div className="flex items-center justify-between gap-4">
         <h2 className="text-xl tracking-tight">Tareas</h2>
         <div className="flex items-center gap-2">
-          <Select defaultValue="today">
-            <SelectTrigger className="w-30">
-              <SelectValue placeholder="Hoy" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="today">Hoy</SelectItem>
-                <SelectItem value="tomorrow">Mañana</SelectItem>
-                <SelectItem value="this-week">Esta semana</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <Button>
-            <Plus data-icon="inline-start" />
-            Nueva tarea
+          <PanelFilterSelect
+            paramKey="trange"
+            value={range}
+            options={RANGE_OPTIONS}
+            ariaLabel="Filtrar tareas por rango temporal"
+            className="w-36"
+          />
+          <Button asChild>
+            <Link href="/dashboard/projects">
+              <Plus data-icon="inline-start" />
+              Nueva tarea
+            </Link>
           </Button>
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-xl border bg-background shadow-xs">
-        <div className="divide-y">
-          {items.map((task) => (
-            <div key={task.title} className="flex items-center gap-2 p-4">
-              <Checkbox
-                checked={task.checked}
-                aria-label={task.title}
-                onCheckedChange={(checked) => {
-                  setItems((current) =>
-                    current.map((item) => (item.title === task.title ? { ...item, checked: checked === true } : item)),
-                  );
-                }}
-              />
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                  <div className="flex min-w-0 flex-col gap-2 lg:flex-row lg:items-center lg:gap-4">
-                    <span className="truncate text-sm">{task.title}</span>
-                    <Badge variant="outline" className="px-3 py-1 font-normal">
-                      {task.tag}
-                    </Badge>
-                  </div>
-                  <div className="flex shrink-0 items-center gap-3 text-muted-foreground text-sm">
-                    <span>{task.time}</span>
-                    <Calendar1 className="size-4" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      {tasks.length === 0 ? (
+        <Empty className="border border-dashed">
+          <EmptyHeader>
+            <EmptyTitle>Nada pendiente en este rango</EmptyTitle>
+            <EmptyDescription>
+              Las tareas que te asignen (o sin responsable) con fecha en este rango aparecerán aquí.
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Button asChild variant="outline">
+              <Link href="/dashboard/projects">Ir a proyectos para crear una tarea</Link>
+            </Button>
+          </EmptyContent>
+        </Empty>
+      ) : (
+        <PanelTasksList
+          tasks={tasks.map((task) => ({
+            id: task.id,
+            title: task.title,
+            done: task.status === "DONE",
+            dueDate: task.dueDate,
+            overdue: task.overdue,
+            projectId: task.project.id,
+            projectName: task.project.name,
+            assigneeName: task.assignee?.name ?? null,
+          }))}
+        />
+      )}
     </section>
   );
 }

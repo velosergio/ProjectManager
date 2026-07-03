@@ -12,6 +12,8 @@ export const SCOPED_MODELS = new Set<string>([
   "FileAsset",
   "Event",
   "Subscription",
+  "Tag",
+  "ProcessType",
 ]);
 
 type AnyArgs = Record<string, unknown>;

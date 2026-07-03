@@ -1,4 +1,4 @@
-import type { PlanCode, PrismaClient } from "@/generated/prisma/client";
+import type { PlanCode, PrismaClient, ProjectPriority, ProjectStatus } from "@/generated/prisma/client";
 import { FeatureNotInPlanError, QuotaExceededError } from "@/lib/errors";
 import { prisma } from "@/lib/prisma";
 
@@ -55,19 +55,46 @@ export async function assertWithinQuota(
   }
 }
 
+/// Datos de creación de un proyecto (FASE 2). Los ids referenciados DEBEN
+/// venir ya verificados contra el tenant por la capa de mutaciones.
+export interface CreateProjectData {
+  name: string;
+  description?: string | null;
+  clientId?: string | null;
+  status?: ProjectStatus;
+  priority?: ProjectPriority;
+  startDate?: Date | null;
+  endDate?: Date | null;
+  ownerId?: string | null;
+  processTypeId?: string | null;
+  tagIds?: string[];
+}
+
 /// Crea un proyecto respetando la cuota del plan, de forma atómica frente a
 /// concurrencia: la comprobación y la creación corren en una única transacción
-/// serializable (edge "Concurrencia en el límite de cuota").
-export async function createProjectWithQuota(
-  tenantId: string,
-  data: { name: string; description?: string | null; clientId?: string | null },
-) {
+/// serializable (edge "Concurrencia en el límite de cuota"). Crea además el
+/// proceso por defecto «General» del proyecto (FASE 2, research D2).
+export async function createProjectWithQuota(tenantId: string, data: CreateProjectData) {
   return prisma.$transaction(
     async (tx) => {
       await assertWithinQuota(tx, tenantId, "projects");
-      return tx.project.create({
-        data: { name: data.name, description: data.description ?? null, clientId: data.clientId ?? null, tenantId },
+      const project = await tx.project.create({
+        data: {
+          tenantId,
+          name: data.name,
+          description: data.description ?? null,
+          clientId: data.clientId ?? null,
+          status: data.status ?? "PENDING",
+          priority: data.priority ?? "MEDIUM",
+          startDate: data.startDate ?? null,
+          endDate: data.endDate ?? null,
+          ownerId: data.ownerId ?? null,
+          processTypeId: data.processTypeId ?? null,
+          ...(data.tagIds && data.tagIds.length > 0 ? { tags: { connect: data.tagIds.map((id) => ({ id })) } } : {}),
+        },
       });
+      await tx.process.create({ data: { tenantId, projectId: project.id, name: "General", order: 0 } });
+      return project;
     },
     { isolationLevel: "Serializable" },
   );

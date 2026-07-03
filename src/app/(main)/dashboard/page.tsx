@@ -1,4 +1,12 @@
+import { Suspense } from "react";
+
+import Link from "next/link";
+
+import { Button } from "@/components/ui/button";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
+import { Skeleton } from "@/components/ui/skeleton";
 import { auth } from "@/lib/auth";
+import { getTenantContext } from "@/lib/tenant-context";
 
 import { CalendarPanel } from "./_components/calendar-panel";
 import { FocusCard } from "./_components/focus-card";
@@ -29,10 +37,32 @@ function obtenerSaludo(): string {
   return "Buenas noches";
 }
 
-export default async function Page() {
-  const session = await auth();
-  const nombre = session?.user?.name?.split(" ")[0] ?? "";
+const SKELETON_SLOTS = ["uno", "dos", "tres"] as const;
+
+function SectionSkeleton({ rows = 3 }: { rows?: number }) {
+  return (
+    <div className="flex flex-col gap-2">
+      <Skeleton className="h-7 w-40" />
+      <div className="grid gap-4 md:grid-cols-3">
+        {SKELETON_SLOTS.slice(0, rows).map((slot) => (
+          <Skeleton key={slot} className="h-28 w-full" />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const [session, authSession, params] = await Promise.all([getTenantContext(), auth(), searchParams]);
+  const nombre = authSession?.user?.name?.split(" ")[0] ?? "";
   const saludo = nombre ? `${obtenerSaludo()}, ${nombre}.` : `${obtenerSaludo()}.`;
+
+  const pstatus = typeof params.pstatus === "string" ? params.pstatus : undefined;
+  const trange = typeof params.trange === "string" ? params.trange : undefined;
 
   return (
     <div className="flex flex-col gap-6">
@@ -45,9 +75,39 @@ export default async function Page() {
                 Hagamos que hoy sea un día productivo y con sentido.
               </p>
             </div>
-            <SummaryCards />
-            <TasksSection />
-            <ProjectsSection />
+
+            {session?.tenantId ? (
+              <>
+                <Suspense fallback={<SectionSkeleton />}>
+                  <SummaryCards userId={session.userId} />
+                </Suspense>
+                <Suspense fallback={<SectionSkeleton rows={1} />}>
+                  <TasksSection userId={session.userId} rangeParam={trange} />
+                </Suspense>
+                <Suspense fallback={<SectionSkeleton />}>
+                  <ProjectsSection statusParam={pstatus} />
+                </Suspense>
+              </>
+            ) : (
+              <Empty className="border border-dashed">
+                <EmptyHeader>
+                  <EmptyTitle>Sin organización activa</EmptyTitle>
+                  <EmptyDescription>
+                    {session?.role === "MANGO"
+                      ? "Selecciona una organización desde la consola mango para ver sus proyectos y tareas."
+                      : "Tu sesión no tiene una organización asociada."}
+                  </EmptyDescription>
+                </EmptyHeader>
+                {session?.role === "MANGO" && (
+                  <EmptyContent>
+                    <Button asChild>
+                      <Link href="/dashboard/mango">Ir a la consola mango</Link>
+                    </Button>
+                  </EmptyContent>
+                )}
+              </Empty>
+            )}
+
             <QuickActions />
             <QuoteCard />
           </div>

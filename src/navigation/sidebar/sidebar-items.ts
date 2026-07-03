@@ -1,5 +1,6 @@
 import {
   Calendar,
+  FolderKanban,
   Kanban,
   LayoutDashboard,
   Lock,
@@ -80,6 +81,12 @@ export const sidebarItems: NavGroup[] = [
         title: "Panel",
         url: "/dashboard",
         icon: LayoutDashboard,
+      },
+      {
+        id: "projects",
+        title: "Proyectos",
+        url: "/dashboard/projects",
+        icon: FolderKanban,
       },
     ],
   },

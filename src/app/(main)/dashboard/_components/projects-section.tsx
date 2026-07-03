@@ -1,96 +1,107 @@
-import { addDays, format } from "date-fns";
+import Link from "next/link";
+
+import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { ClipboardCheck, Globe, Orbit, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
 import { Progress } from "@/components/ui/progress";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { PROJECT_STATUS_LABELS, PROJECT_STATUS_ORDER } from "@/lib/projects/labels";
+import { getPanelProjects } from "@/lib/projects/queries";
+import { projectStatusSchema } from "@/lib/projects/schemas";
+import { getTenantDb } from "@/lib/tenant-db-session";
 
-const today = new Date();
+import { PanelFilterSelect } from "./panel-filter-select";
 
-const projects = [
-  {
-    title: "Hoja de ruta Q2",
-    status: "En progreso",
-    description: "Entregar mejor y de forma más inteligente.",
-    progress: 68,
-    due: `Vence el ${format(addDays(today, 9), "d 'de' MMM", { locale: es })}`,
-    icon: Orbit,
-  },
-  {
-    title: "Rediseño del sitio web",
-    status: "Planificación",
-    description: "Limpio, moderno y rápido.",
-    progress: 42,
-    due: `Vence el ${format(addDays(today, 21), "d 'de' MMM", { locale: es })}`,
-    icon: Globe,
-  },
-  {
-    title: "Incorporación",
-    status: "Planificación",
-    description: "Reducir los pasos iniciales.",
-    progress: 31,
-    due: `Vence el ${format(addDays(today, 18), "d 'de' MMM", { locale: es })}`,
-    icon: ClipboardCheck,
-  },
-] as const;
+const FILTER_OPTIONS = [
+  { value: "all", label: "Todos" },
+  ...PROJECT_STATUS_ORDER.map((status) => ({ value: status, label: PROJECT_STATUS_LABELS[status] })),
+];
 
-export function ProjectsSection() {
+/// Sección «Proyectos» del panel: todos los proyectos reales de la
+/// organización con estado, avance y cierre (FR-014).
+export async function ProjectsSection({ statusParam }: { statusParam?: string }) {
+  const parsed = projectStatusSchema.safeParse(statusParam);
+  const status = parsed.success ? parsed.data : undefined;
+  const db = await getTenantDb();
+  const projects = await getPanelProjects(db, status);
+
   return (
     <section className="flex flex-col gap-2">
       <div className="flex items-center justify-between gap-4">
         <h2 className="text-xl tracking-tight">Proyectos</h2>
         <div className="flex items-center gap-2">
-          <Select defaultValue="active">
-            <SelectTrigger className="w-28">
-              <SelectValue placeholder="Activos" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="active">Activos</SelectItem>
-                <SelectItem value="planning">Planificación</SelectItem>
-                <SelectItem value="completed">Completados</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <Button variant="outline">
-            <Plus data-icon="inline-start" />
-            Nuevo
+          <PanelFilterSelect
+            paramKey="pstatus"
+            value={status ?? "all"}
+            options={FILTER_OPTIONS}
+            ariaLabel="Filtrar proyectos por estado"
+            className="w-36"
+          />
+          <Button asChild variant="outline">
+            <Link href="/dashboard/projects">
+              <Plus data-icon="inline-start" />
+              Nuevo
+            </Link>
           </Button>
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        {projects.map((project) => (
-          <Card key={project.title} className="shadow-xs">
-            <CardHeader>
-              <CardTitle>
-                <div className="flex items-center gap-2">
-                  <project.icon className="size-4 text-muted-foreground" />
-                  <span>{project.title}</span>
+      {projects.length === 0 ? (
+        <Empty className="border border-dashed">
+          <EmptyHeader>
+            <EmptyTitle>{status ? "Sin proyectos en este estado" : "Aún no hay proyectos"}</EmptyTitle>
+            <EmptyDescription>
+              {status
+                ? "Prueba con otro estado o revisa el listado completo."
+                : "Crea el primer proyecto de tu organización para empezar a trabajar."}
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Button asChild>
+              <Link href="/dashboard/projects">{status ? "Ver todos los proyectos" : "Crear el primer proyecto"}</Link>
+            </Button>
+          </EmptyContent>
+        </Empty>
+      ) : (
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {projects.map((project) => (
+            <Card key={project.id} className="shadow-xs">
+              <CardHeader>
+                <CardTitle className="truncate">
+                  <Link href={`/dashboard/projects/${project.id}`} className="hover:underline">
+                    {project.name}
+                  </Link>
+                </CardTitle>
+                <CardAction>
+                  <Badge variant="outline">{PROJECT_STATUS_LABELS[project.status]}</Badge>
+                </CardAction>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col gap-2">
+                  {project.description && (
+                    <p className="truncate text-muted-foreground text-sm">{project.description}</p>
+                  )}
+                  <div className="flex items-center gap-2">
+                    <Progress value={project.progress.pct} aria-label={`Avance ${project.progress.pct} %`} />
+                    <span className="text-muted-foreground text-xs tabular-nums">{project.progress.pct} %</span>
+                  </div>
                 </div>
-              </CardTitle>
-              <CardAction>
-                <Badge variant="outline">{project.status}</Badge>
-              </CardAction>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col gap-1">
-                <div className="text-sm leading-none">{project.description}</div>
-                <div className="flex items-center gap-3">
-                  <Progress value={project.progress} className="h-2" />
-                  <span className="shrink-0 text-sm">{project.progress}%</span>
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter className="py-2.5">
-              <span className="text-muted-foreground">{project.due}</span>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
+              </CardContent>
+              <CardFooter>
+                <p className="text-muted-foreground text-xs">
+                  {project.endDate
+                    ? `Vence el ${format(project.endDate, "d 'de' MMM", { locale: es })}`
+                    : "Sin fecha de cierre"}
+                </p>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      )}
     </section>
   );
 }

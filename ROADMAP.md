@@ -51,12 +51,6 @@
 
 ---
 
-# Roadmap General
-
-Duración estimada:
-
----
-
 # FASE 0 — Instalación y Configuración Base
 
 Objetivo: dejar el entorno completamente reproducible.
@@ -65,13 +59,13 @@ Objetivo: dejar el entorno completamente reproducible.
 
 ### Entregables
 
-* Dockerizado
-* Base Next.js funcional
-* MySQL conectado
-* Prisma configurado
-* Variables de entorno
-* CI/CD básico
-* Spec Driven Development (Constitucion del proyecto y Spec inicial)
+* [x] Dockerizado
+* [x] Base Next.js funcional
+* [x] MySQL conectado
+* [x] Prisma configurado
+* [x] Variables de entorno
+* [x] CI/CD básico
+* [x] Spec Driven Development (Constitucion del proyecto y Spec inicial)
 
 # FASE 1 — Core del Sistema + Arquitectura Multitenant
 
@@ -86,11 +80,11 @@ middleware / extensión que inyecta el `tenantId` del contexto).
 
 ### Entregables
 
-* [ ] Modelo `Tenant` (organización) y relación con `Usuario`
-* [ ] Resolución del tenant en cada request (subdominio o `tenantId` en sesión)
-* [ ] Prisma middleware que fuerza el filtro por `tenantId` en todas las consultas
-* [ ] Aislamiento de datos verificado (un tenant no puede leer datos de otro)
-* [ ] Bypass de aislamiento controlado para el rol `mango` (acceso global)
+* [x] Modelo `Tenant` (organización) y relación con `Usuario`
+* [x] Resolución del tenant en cada request (subdominio o `tenantId` en sesión)
+* [x] Prisma middleware que fuerza el filtro por `tenantId` en todas las consultas
+* [x] Aislamiento de datos verificado (un tenant no puede leer datos de otro)
+* [x] Bypass de aislamiento controlado para el rol `mango` (acceso global)
 
 ## Planes de Suscripción
 
@@ -104,11 +98,11 @@ Pro+       → 50.000 COP / mes  ·  precio anual con descuento
 
 ### Entregables
 
-* [ ] Modelo `Plan` (gratuito / pro / pro+) con límites y features por plan
-* [ ] Asociación `Tenant → Plan` vigente
-* [ ] Gating de features según el plan del tenant (helpers / guards)
-* [ ] Plan Gratuito por defecto al crear un tenant
-* [ ] Definición de cuotas/límites por plan (proyectos, usuarios, almacenamiento)
+* [x] Modelo `Plan` (gratuito / pro / pro+) con límites y features por plan
+* [x] Asociación `Tenant → Plan` vigente
+* [x] Gating de features según el plan del tenant (helpers / guards)
+* [x] Plan Gratuito por defecto al crear un tenant
+* [x] Definición de cuotas/límites por plan (proyectos, usuarios, almacenamiento)
 
 > El cobro, la vigencia y la pasarela (Wompi) se implementan en la **FASE 9 — Pagos y Suscripciones**.
 
@@ -124,23 +118,23 @@ mango  → super usuario global; acceso transversal a cualquier dato de cualquie
 
 ### Usuarios y permisos
 
-* [ ] Login
-* [ ] Roles (`admin`, `mango`)
-* [ ] JWT / Session (con `tenantId` y `role` en el token/sesión)
-* [ ] Recuperación contraseña
-* [ ] Autorización por rol y por plan (middleware/guards)
-* [ ] El rol `mango` ignora el scoping por `tenantId` (acceso global de solo lectura/escritura según permisos)
+* [x] Login
+* [x] Roles (`admin`, `mango`)
+* [x] JWT / Session (con `tenantId` y `role` en el token/sesión)
+* [x] Recuperación contraseña
+* [x] Autorización por rol y por plan (middleware/guards)
+* [x] El rol `mango` ignora el scoping por `tenantId` (acceso global de solo lectura/escritura según permisos)
 
 ### Comando `npm run mango`
 
 Comando CLI personalizado para registrar un usuario con rol `mango` (super usuario).
 
-* [ ] Script `mango` en `package.json` (`tsx`/`ts-node` sobre `tsconfig.scripts.json`)
-* [ ] Formulario dinámico interactivo en terminal (prompts): nombre, email, contraseña, confirmación
-* [ ] Validación de datos con Zod (email único, fuerza de contraseña)
-* [ ] Hash de contraseña antes de persistir
-* [ ] Creación del usuario `mango` directamente vía Prisma (sin tenant asociado / acceso global)
-* [ ] Idempotencia / aviso si el email ya existe
+* [x] Script `mango` en `package.json` (`tsx`/`ts-node` sobre `tsconfig.scripts.json`)
+* [x] Formulario dinámico interactivo en terminal (prompts): nombre, email, contraseña, confirmación
+* [x] Validación de datos con Zod (email único, fuerza de contraseña)
+* [x] Hash de contraseña antes de persistir
+* [x] Creación del usuario `mango` directamente vía Prisma (sin tenant asociado / acceso global)
+* [x] Idempotencia / aviso si el email ya existe
 
 ```jsonc
 // package.json
@@ -151,11 +145,11 @@ Comando CLI personalizado para registrar un usuario con rol `mango` (super usuar
 
 ### Navegación
 
-* [ ] Sidebar (adaptado a rol y plan)
-* [ ] Layout principal
-* [ ] Perfil
-* [ ] Indicador de plan vigente y estado de suscripción
-* [ ] Vista/consola exclusiva para rol `mango` (selector de tenant)
+* [x] Sidebar (adaptado a rol y plan)
+* [x] Layout principal
+* [x] Perfil
+* [x] Indicador de plan vigente y estado de suscripción
+* [x] Vista/consola exclusiva para rol `mango` (selector de tenant)
 
 ### Modelo inicial
 
@@ -178,7 +172,7 @@ Eventos
 
 Objetivo: núcleo funcional.
 
-## Proyecto
+## Proyectos y tareas
 
 Campos:
 
@@ -189,17 +183,19 @@ Campos:
 * Fecha inicio
 * Fecha cierre
 * Responsable
+* Tareas
 
 ---
 
 ## Funciones
 
-* [ ] CRUD proyectos
-* [ ] Vista detalle
-* [ ] Seguimiento
-* [ ] Búsqueda
-* [ ] Filtros
-* [ ] Etiquetas
+* [x] CRUD proyectos
+* [x] Vista detalle
+* [x] Seguimiento
+* [x] Búsqueda
+* [x] Filtros
+* [x] Etiquetas
+* [x] Tareas
 
 ---
 
@@ -283,7 +279,7 @@ Objetivo: analítica.
 Herramientas exclusivas del rol `mango`, con visibilidad transversal a todos los tenants.
 
 * [ ] Vista cross-tenant (métricas agregadas de toda la plataforma)
-* [ ] Selector / switch de tenant para inspeccionar datos de cualquier organización
+* [x] Selector / switch de tenant para inspeccionar datos de cualquier organización
 * [ ] Métricas de adopción y uso por tenant (usuarios activos, proyectos, eventos)
 * [ ] Distribución de tenants por plan (gratuito / pro / pro+)
 * [ ] MRR / ingresos por suscripción y proyección (mensual vs anual)
@@ -397,7 +393,7 @@ Anual
 
 ## Control de suscripción por vigencia
 
-* [ ] Modelo `Subscription` (plan, ciclo mensual/anual, fechaInicio, fechaFin, estado)
+* [x] Modelo `Subscription` (plan, ciclo mensual/anual, fechaInicio, fechaFin, estado) — creado en FASE 1; falta la lógica de vigencia
 * [ ] Cálculo de fecha de vencimiento según ciclo (mensual / anual)
 * [ ] Cron Job diario que revisa suscripciones vencidas
 * [ ] Al vencer la suscripción: degradar el tenant a plan Gratuito o bloquear features Pro/Pro+

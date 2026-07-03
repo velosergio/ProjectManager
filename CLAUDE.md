@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan
-at specs/004-unified-dashboard/plan.md
+at specs/005-project-management/plan.md
 <!-- SPECKIT END -->
 
 ## Idioma
@@ -50,10 +50,17 @@ npm run db:seed        # ejecuta prisma/seed.ts
 
 npm run doctor         # React Doctor (calidad React)
 npm run generate:presets   # regenera los presets de tema en theme.ts (ver abajo)
+
+npm run test           # Vitest (una pasada)
+npm run test:watch     # Vitest en modo watch
+npm run mango          # crea un usuario mango (super usuario) vía prompts en terminal
 ```
 
-No hay framework de pruebas configurado todavía, aunque la constitución exige pruebas para la
-lógica de negocio (Principio II). Antes de escribir tests, hay que elegir y configurar el runner.
+Las pruebas usan **Vitest** (`vitest.config.ts`, entorno `node`, `globals: true`) y viven en
+`tests/unit/` y `tests/integration/`. Las de integración golpean la base de datos real: usan la
+misma `DATABASE_URL` de `.env.local` (cargada en `tests/setup.ts`), así que MySQL debe estar
+corriendo y migrado antes de ejecutarlas. La constitución exige pruebas para la lógica de
+negocio (Principio II).
 
 ## Puertas de calidad (obligatorias antes de fusionar a `main`)
 
