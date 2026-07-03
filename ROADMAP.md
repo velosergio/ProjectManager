@@ -230,6 +230,16 @@ Campos:
 
 ---
 
+# Convención transversal — TanStack Query (aplica de la FASE 4 en adelante)
+
+Todo fetching y toda mutación de datos en componentes cliente se implementa con
+**TanStack Query** (ya presente en el stack): query keys con scoping por tenant,
+invalidación de caché tras cada mutación y estados de carga/error unificados.
+Las fases ya completadas (0–3) se migran de forma oportunista cuando se toque su
+código; las fases nuevas lo adoptan desde el inicio.
+
+---
+
 # FASE 4 — Equipo de trabajo y Notas
 
 Objetivo: gestionar los miembros y equipos de la organización, y centralizar notas con alcance
@@ -415,14 +425,31 @@ Herramientas exclusivas del rol `mango`, con visibilidad transversal a todos los
 
 # FASE 8 — Gestión Documental
 
-Objetivo: centralizar archivos.
+Objetivo: centralizar archivos y documentos, con inteligencia sobre su contenido
+(OCR, fechas de vencimiento, plazos y resúmenes).
 
-## Funciones
+## Archivos
 
-* [ ] Subida archivos
+* [ ] Subida archivos (MinIO)
 * [ ] Versionado
-* [ ] Adjuntos
+* [ ] Adjuntos (proyecto, tarea, cliente)
 * [ ] Historial
+
+## Documentos (CRUD)
+
+* [ ] CRUD documentos (crear, ver, editar metadatos, eliminar) respetando cuota de almacenamiento por plan
+* [ ] Vista detalle con previsualización
+* [ ] Búsqueda y filtros (tipo, proyecto, cliente, fechas)
+* [ ] Asociación a proyecto, cliente o tarea
+
+## OCR y análisis de contenido
+
+* [ ] Pipeline OCR para PDF e imágenes (procesamiento asíncrono vía colas con Redis)
+* [ ] Identificación de fechas de vencimiento en el documento
+* [ ] Identificación de plazos y términos
+* [ ] Resumen automático del documento
+* [ ] Revisión/corrección humana de los datos extraídos antes de confirmarlos
+* [ ] Las fechas de vencimiento confirmadas generan eventos y recordatorios (se conecta con FASE 9)
 
 Campos:
 
@@ -432,6 +459,9 @@ Tipo
 Recepción
 Proyecto
 Usuario
+Fechas detectadas (vencimientos, plazos)
+Resumen
+Estado OCR (pendiente · procesado · revisado · error)
 ```
 
 Incluye:
@@ -551,7 +581,23 @@ Pagado
 
 ---
 
-# FASE 12 — Producción
+# FASE 12 — Rebranding a Project Manager
+
+Objetivo: eliminar el branding heredado de la plantilla «Studio Admin» y consolidar
+la identidad **Project Manager** antes del lanzamiento.
+
+## Funciones
+
+* [ ] Actualizar `src/config/app-config.ts` (nombre, descripción, metadatos de la app)
+* [ ] Metadatos y SEO (títulos, descripciones, Open Graph)
+* [ ] Logos, favicon y manifest
+* [ ] Textos de UI: páginas de autenticación, landing y emails transaccionales
+* [ ] Retirar o aislar las rutas demo heredadas de la plantilla (crm, finance, ecommerce, logistics, etc.)
+* [ ] Actualizar README y documentación del proyecto
+
+---
+
+# FASE 13 — Producción
 
 ## Infraestructura
 
@@ -570,7 +616,22 @@ Herramientas:
 
 ---
 
-# Agregar:
-- Fase de plugins, adaptaciones por tenant que agrega modulos
-- Fase documentos, con capacidades CRUD, OCR para identificar fechas de vencimiento, plazos, resumen del documento
-- Fase de rebranding a Project Manager
+# FASE 14 — Plugins y Módulos por Tenant
+
+Objetivo: extensibilidad post-lanzamiento — módulos activables que adaptan la
+aplicación a las necesidades de cada tenant.
+
+## Sistema de módulos
+
+* [ ] Registro/catálogo de módulos disponibles (manifest: nombre, rutas, permisos, widgets)
+* [ ] Activación y desactivación de módulos por tenant
+* [ ] Gating por plan: qué módulos están disponibles en Gratuito / Pro / Pro+
+* [ ] Navegación dinámica: el sidebar refleja los módulos activos del tenant
+* [ ] Widgets de dashboard aportados por módulos activos
+
+## Adaptaciones por tenant
+
+* [ ] Configuración propia de cada módulo por tenant
+* [ ] Aislamiento: un módulo solo accede a datos del tenant (vía `getTenantDb()`)
+* [ ] Administración de módulos desde el panel del `admin` del tenant
+* [ ] Gestión global de módulos desde la consola `mango` (habilitar/deshabilitar por tenant o plan)

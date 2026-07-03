@@ -1,11 +1,9 @@
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import { config as loadEnv } from "dotenv";
 
+import { seedPlans } from "../prisma/seed-plans";
 import { PrismaClient } from "../src/generated/prisma/client";
-import { seedPlans } from "./seed-plans";
 
-// El seed se ejecuta con `tsx` (fuera del bundler de Next), así que cargamos las
-// variables y construimos el cliente con el driver adapter, igual que en runtime.
 loadEnv({ path: ".env.local" });
 loadEnv();
 
@@ -17,6 +15,13 @@ if (!connectionString) {
 const prisma = new PrismaClient({ adapter: new PrismaMariaDb(connectionString) });
 
 async function main() {
+  const planCount = await prisma.plan.count();
+  if (planCount > 0) {
+    console.log(`Seed omitido: ya hay ${planCount} plan(es) en la base de datos.`);
+    return;
+  }
+
+  console.log("Ejecutando seed inicial de planes...");
   await seedPlans(prisma);
 }
 

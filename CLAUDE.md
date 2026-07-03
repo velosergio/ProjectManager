@@ -158,5 +158,7 @@ el JWT de NextAuth (ver `src/types/next-auth.d.ts`).
 para EasyPanel; MariaDB y Redis se gestionan como servicios externos. El contenedor **solo levanta
 la app** (`CMD node server.js`, sin entrypoint); las migraciones se aplican manualmente desde la
 consola del contenedor con `npx prisma migrate deploy` (el CLI de Prisma va incluido en la imagen).
+`npm run mango` también funciona desde esa consola: la imagen incluye `tsx` global, el script,
+`@clack/prompts` y las fuentes del cliente Prisma generado (`src/generated/prisma`).
 Variables de entorno en `.env.example` (copiar a `.env.local`): `DATABASE_URL`,
 `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, `REDIS_URL`, config de MinIO, SMTP opcional.

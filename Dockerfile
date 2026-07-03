@@ -9,9 +9,12 @@
 #   2. builder  — genera el cliente Prisma + compila Next.js
 #   3. runner   — imagen mínima de producción (output standalone)
 #
-# Migraciones: NO se ejecutan en el arranque. El CLI de Prisma queda incluido
-# en la imagen para poder aplicarlas manualmente desde la consola del
-# contenedor en EasyPanel:  npx prisma migrate deploy
+# Arranque: migraciones + seed condicional vía `scripts/docker-entrypoint.sh`.
+# `AUTO_DB_SEED=true` (por defecto) ejecuta el seed solo si la tabla Plan está
+# vacía. Desactívalo con `AUTO_DB_SEED=false` en EasyPanel si hace falta.
+#
+# Super usuario: `npm run mango` también funciona desde la consola del
+# contenedor (tsx global + script + cliente Prisma generado incluidos).
 # =============================================================================
 
 ARG NODE_VERSION=24-alpine
@@ -90,13 +93,28 @@ COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
 # Prisma 7: el cliente generado ya viaja dentro de .next/standalone. Copiamos
 # además el schema + migraciones, la config (aporta la URL del datasource) y el
-# CLI de Prisma con sus dependencias, SOLO para poder ejecutar migraciones a
-# demanda desde la consola del contenedor (npx prisma migrate deploy).
+# CLI de Prisma con sus dependencias para `migrate deploy` en el arranque.
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /app/prisma.config.ts ./prisma.config.ts
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/prisma ./node_modules/prisma
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/dotenv ./node_modules/dotenv
+
+# Soporte para `npm run mango` desde la consola del contenedor (crear el super
+# usuario). El CLI es TypeScript, así que necesita: tsx (global, es devDep y no
+# viaja en standalone), el script, el schema Zod compartido, el cliente Prisma
+# generado (fuentes TS en src/generated) y @clack/prompts (solo lo usa el CLI,
+# el trace de Next no lo incluye). bcryptjs, zod y mariadb ya vienen en el
+# node_modules trazado del standalone porque la app los usa en runtime.
+RUN npm install -g tsx@4.23.0
+COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
+COPY --from=builder --chown=nextjs:nodejs /app/src/lib/mango-schema.ts ./src/lib/mango-schema.ts
+COPY --from=builder --chown=nextjs:nodejs /app/src/generated/prisma ./src/generated/prisma
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@clack ./node_modules/@clack
+
+# Entrypoint: migraciones automáticas antes de levantar la app
+COPY --chown=nextjs:nodejs scripts/docker-entrypoint.sh ./docker-entrypoint.sh
+RUN chmod +x docker-entrypoint.sh
 
 USER nextjs
 
@@ -104,6 +122,6 @@ EXPOSE 3000
 
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
+ENV AUTO_DB_SEED=true
 
-# Solo levanta la app — sin entrypoint ni migraciones en el arranque
-CMD ["node", "server.js"]
+CMD ["./docker-entrypoint.sh"]
