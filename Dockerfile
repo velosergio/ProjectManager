@@ -106,7 +106,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/node_modules/dotenv ./node_module
 # generado (fuentes TS en src/generated) y @clack/prompts (solo lo usa el CLI,
 # el trace de Next no lo incluye). bcryptjs, zod y mariadb ya vienen en el
 # node_modules trazado del standalone porque la app los usa en runtime.
-RUN npm install -g tsx@4.23.0
+RUN npm install -g tsx@4.23.0 prisma@7.8.0
 COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
 COPY --from=builder --chown=nextjs:nodejs /app/src/lib/mango-schema.ts ./src/lib/mango-schema.ts
 COPY --from=builder --chown=nextjs:nodejs /app/src/generated/prisma ./src/generated/prisma

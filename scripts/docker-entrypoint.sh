@@ -2,7 +2,7 @@
 set -e
 
 echo "Aplicando migraciones de Prisma..."
-npx prisma migrate deploy
+prisma migrate deploy
 
 if [ "${AUTO_DB_SEED:-true}" = "true" ]; then
   echo "Comprobando seed inicial de planes..."
