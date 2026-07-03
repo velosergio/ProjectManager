@@ -113,8 +113,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/src/generated/prisma ./src/genera
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@clack ./node_modules/@clack
 
 # Entrypoint: migraciones automáticas antes de levantar la app
-COPY --chown=nextjs:nodejs scripts/docker-entrypoint.sh ./docker-entrypoint.sh
-RUN chmod +x docker-entrypoint.sh
+RUN chmod +x scripts/docker-entrypoint.sh
 
 USER nextjs
 
@@ -124,4 +123,4 @@ ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 ENV AUTO_DB_SEED=true
 
-CMD ["./docker-entrypoint.sh"]
+CMD ["./scripts/docker-entrypoint.sh"]
