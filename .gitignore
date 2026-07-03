@@ -39,3 +39,7 @@ next-env.d.ts
 
 # prisma — cliente generado (Prisma 7: ya no vive en node_modules)
 /src/generated
+
+# Logs
+/logs
+*.log

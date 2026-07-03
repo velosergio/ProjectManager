@@ -61,8 +61,10 @@ COPY . .
 # Genera el cliente Prisma para la plataforma destino
 RUN npx prisma generate
 
-# Compila Next.js (produce .next/standalone)
-RUN npm run build
+# Compila Next.js (produce .next/standalone) con webpack en lugar de
+# Turbopack: el pico de RAM medido baja de ~4,7 GB a ~1,8 GB, imprescindible
+# para que el VPS no mate el contenedor durante el build del deploy.
+RUN npm run build:docker
 
 # -----------------------------------------------------------------------------
 # Etapa 3: runner — imagen mínima de producción

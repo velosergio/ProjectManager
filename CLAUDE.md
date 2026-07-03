@@ -34,7 +34,8 @@ conducen ese flujo.
 
 ```bash
 npm run dev            # servidor de desarrollo (Next.js)
-npm run build          # build de producción (output: standalone)
+npm run build          # build de producción (output: standalone, Turbopack)
+npm run build:docker   # build con webpack (menor pico de RAM; lo usa el Dockerfile)
 npm run start          # servir el build
 
 npm run check          # Biome: lint + formato (verificación)
