@@ -572,4 +572,5 @@ Herramientas:
 
 # Agregar:
 - Fase de plugins, adaptaciones por tenant que agrega modulos
-- OCR para identificar fechas de vencimiento, plazos, resumen del documento
+- Fase documentos, con capacidades CRUD, OCR para identificar fechas de vencimiento, plazos, resumen del documento
+- Fase de rebranding a Project Manager

@@ -10,6 +10,9 @@ import type { UserRole } from "@/generated/prisma/client";
  * JWT de sesión, por lo que esta configuración es suficiente y portable a edge.
  */
 export const authConfig = {
+  // Autohospedado detrás del reverse proxy de EasyPanel: sin esto, NextAuth v5
+  // rechaza toda petición en producción con el error `UntrustedHost`.
+  trustHost: true,
   // Las credenciales (usuario/contraseña) requieren estrategia JWT.
   session: { strategy: "jwt" },
   pages: {
