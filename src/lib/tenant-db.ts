@@ -36,23 +36,23 @@ export function applyTenantScope(operation: string, args: AnyArgs | undefined, t
     case "updateMany":
     case "delete":
     case "deleteMany": {
-      next.where = { ...((next.where as AnyArgs) ?? {}), tenantId };
+      next.where = { ...((next.where as AnyArgs | undefined) ?? {}), tenantId };
       break;
     }
     case "create": {
-      next.data = { ...((next.data as AnyArgs) ?? {}), tenantId };
+      next.data = { ...((next.data as AnyArgs | undefined) ?? {}), tenantId };
       break;
     }
     case "createMany": {
       const data = next.data;
       next.data = Array.isArray(data)
         ? data.map((row) => ({ ...(row as AnyArgs), tenantId }))
-        : { ...((data as AnyArgs) ?? {}), tenantId };
+        : { ...((data as AnyArgs | undefined) ?? {}), tenantId };
       break;
     }
     case "upsert": {
-      next.where = { ...((next.where as AnyArgs) ?? {}), tenantId };
-      next.create = { ...((next.create as AnyArgs) ?? {}), tenantId };
+      next.where = { ...((next.where as AnyArgs | undefined) ?? {}), tenantId };
+      next.create = { ...((next.create as AnyArgs | undefined) ?? {}), tenantId };
       break;
     }
     default:

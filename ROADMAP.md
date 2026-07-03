@@ -104,7 +104,7 @@ Pro+       → 50.000 COP / mes  ·  precio anual con descuento
 * [x] Plan Gratuito por defecto al crear un tenant
 * [x] Definición de cuotas/límites por plan (proyectos, usuarios, almacenamiento)
 
-> El cobro, la vigencia y la pasarela (Wompi) se implementan en la **FASE 9 — Pagos y Suscripciones**.
+> El cobro, la vigencia y la pasarela (Wompi) se implementan en la **FASE 11 — Pagos y Suscripciones**.
 
 ## Roles y permisos
 
@@ -176,7 +176,7 @@ Objetivo: núcleo funcional.
 
 Campos:
 
-* Nombre cliente
+* Cliente (opcional, relación con `Client`)
 * Prioridad
 * Tipo proceso
 * Estado
@@ -199,7 +199,108 @@ Campos:
 
 ---
 
-# FASE 3 — Kanban
+# FASE 3 — Gestión de Clientes
+
+Objetivo: administrar el catálogo de contactos y empresas de la organización.
+
+> El modelo `Client` y el scoping multitenant existen desde la FASE 1. Los proyectos (FASE 2)
+> ya referencian `clientId` de forma opcional; esta fase aporta el CRUD y la UI que hoy falta
+> (el selector de cliente en proyectos solo lista registros ya existentes).
+
+## Clientes
+
+Campos:
+
+* Nombre
+* Email
+* Teléfono
+
+---
+
+## Funciones
+
+* [x] CRUD clientes
+* [x] Vista detalle
+* [x] Seguimiento (resumen en detalle: proyectos asociados por estado, última actividad)
+* [x] Búsqueda
+* [x] Filtros
+* [x] Etiquetas *(catálogo único compartido con proyectos: relación `Client ↔ Tag`)*
+* [x] Proyectos asociados (listado enlazado desde el detalle del cliente)
+* [x] Creación al vuelo desde el formulario de proyecto
+
+---
+
+# FASE 4 — Equipo de trabajo y Notas
+
+Objetivo: gestionar los miembros y equipos de la organización, y centralizar notas con alcance
+contextual (global, proyecto, tarea o equipo).
+
+> Los roles `MANAGER`, `MEMBER` y `VIEWER` existen en el esquema desde la FASE 1, pero hoy solo
+> `admin` y `mango` tienen flujos de gestión. El widget «Notas recientes» del panel y la acción
+> «Nueva nota» son placeholders de demo (spec 004).
+
+## Equipo de trabajo
+
+### Miembros
+
+Campos:
+
+* Nombre
+* Email
+* Rol (`admin` · `manager` · `member` · `viewer`)
+* Estado (activo · invitado · inactivo)
+
+### Equipos
+
+Campos:
+
+* Nombre
+* Descripción
+* Miembros
+
+### Funciones — equipo
+
+* [ ] Invitar y dar de alta miembros del tenant
+* [ ] Asignar y cambiar roles
+* [ ] CRUD equipos de trabajo
+* [ ] Listar miembros y equipos
+* [ ] Desactivar o revocar acceso
+* [ ] Respetar cuota de usuarios por plan
+* [ ] Carga por usuario (tareas/proyectos asignados) — alimenta FASE 7
+
+## Notas
+
+Cada nota tiene **un único alcance** (mutuamente excluyente):
+
+```text
+Global     → visible en toda la organización
+Proyecto   → vinculada a un proyecto
+Tarea      → vinculada a una tarea
+Equipo     → vinculada a un equipo de trabajo
+```
+
+Campos:
+
+* Título
+* Contenido
+* Alcance (global · proyecto · tarea · equipo)
+* Referencia según alcance (`projectId`, `taskId`, `teamId` o ninguna si es global)
+* Autor
+* Fecha de creación / última edición
+
+### Funciones — notas
+
+* [ ] CRUD notas
+* [ ] Filtro y listado por alcance
+* [ ] Búsqueda por título y contenido
+* [ ] Notas en vista detalle de proyecto, tarea y equipo
+* [ ] Widget «Notas recientes» del panel con datos reales
+* [ ] Acción rápida «Nueva nota» operativa
+* [ ] Permisos por rol (quién puede crear/editar/eliminar según alcance)
+
+---
+
+# FASE 5 — Kanban
 
 Objetivo: operación visual.
 
@@ -224,7 +325,7 @@ Funciones:
 
 ---
 
-# FASE 4 — Gantt
+# FASE 6 — Gantt
 
 Objetivo: planeación temporal.
 
@@ -247,24 +348,42 @@ Trimestre
 
 ---
 
-# FASE 5 — Dashboard Ejecutivo
+# FASE 7 — Dashboard Ejecutivo
 
-Objetivo: analítica.
+Objetivo: analítica operativa con datos reales del tenant; sustituir los widgets demo heredados de la plantilla.
 
-## Widgets
+## Estado actual del panel (`/dashboard`)
+
+Integrados con datos reales (FASE 2 / spec 004):
+
+* [x] Tarjetas de resumen — tareas de hoy, progreso semanal personal, proyectos en curso
+* [x] Sección de tareas — asignadas al usuario o sin responsable; filtro hoy/mañana/semana; vencidas destacadas
+* [x] Sección de proyectos — todos los del tenant; filtro por estado; avance y fechas reales
+
+Aún con datos estáticos o sin acción (pendiente de esta fase o de fases posteriores):
+
+* [ ] Acciones rápidas — botones sin enlace (nota, tarea, proyecto, meta, archivo) *(nota → FASE 4)*
+* [ ] Calendario lateral — selector de fecha sin eventos del sistema
+* [ ] Concentración — temporizador Pomodoro placeholder
+* [ ] Notas recientes — contenido fijo de demo *(sustituir en FASE 4)*
+* [ ] Resumen semanal lateral — metas fijas de demo (duplica parcialmente las tarjetas de resumen)
+* [ ] Bloques Negocio / Finanzas / Analítica / Academia — widgets demo de plantilla (CRM, finance, analytics, academy)
+
+## Widgets objetivo
 
 ### Operación
 
 * [ ] Procesos activos
-* [ ] Tareas vencidas
+* [ ] Tareas vencidas *(parcial: destacadas en la sección de tareas; falta widget dedicado)*
 * [ ] Próximos vencimientos
-* [ ] Carga por usuario
+* [ ] Carga por usuario *(depende de FASE 4)*
 
 ### Gestión
 
 * [ ] Proyectos por prioridad
+* [ ] Proyectos por cliente *(depende de FASE 3)*
 * [ ] Tiempo promedio
-* [ ] Pagos pendientes
+* [ ] Pagos pendientes *(depende de FASE 11)*
 * [ ] Alertas
 
 ### Visualizaciones
@@ -273,6 +392,11 @@ Objetivo: analítica.
 * [ ] Líneas
 * [ ] Donut
 * [ ] Heatmap
+
+### Limpieza del panel
+
+* [ ] Retirar o reemplazar los bloques demo (Negocio, Finanzas, Analítica, Academia) tras validación humana (spec 004, US3)
+* [ ] Conectar acciones rápidas a flujos reales (nueva nota → FASE 4, nuevo proyecto, nueva tarea, subir archivo)
 
 ### Consola Mango (medición, seguimiento y analítica global)
 
@@ -289,7 +413,7 @@ Herramientas exclusivas del rol `mango`, con visibilidad transversal a todos los
 
 ---
 
-# FASE 6 — Gestión Documental
+# FASE 8 — Gestión Documental
 
 Objetivo: centralizar archivos.
 
@@ -316,7 +440,7 @@ Incluye:
 
 ---
 
-# FASE 7 — Calendario y Recordatorios
+# FASE 9 — Calendario y Recordatorios
 
 Objetivo: automatización.
 
@@ -342,7 +466,7 @@ Actuación
 
 ---
 
-# FASE 8 — Bitácora y Auditoría
+# FASE 10 — Bitácora y Auditoría
 
 Objetivo: trazabilidad.
 
@@ -364,7 +488,7 @@ Cerrado
 
 ---
 
-# FASE 9 — Pagos y Suscripciones (Wompi)
+# FASE 11 — Pagos y Suscripciones (Wompi)
 
 Objetivo: control financiero, cobro de planes y control de vigencia de la suscripción.
 
@@ -427,7 +551,7 @@ Pagado
 
 ---
 
-# FASE 10 — Producción
+# FASE 12 — Producción
 
 ## Infraestructura
 
@@ -445,3 +569,7 @@ Herramientas:
 * Sentry
 
 ---
+
+# Agregar:
+- Fase de plugins, adaptaciones por tenant que agrega modulos
+- OCR para identificar fechas de vencimiento, plazos, resumen del documento

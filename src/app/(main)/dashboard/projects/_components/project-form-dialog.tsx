@@ -31,11 +31,18 @@ import {
   PROJECT_STATUS_ORDER,
 } from "@/lib/projects/labels";
 
-import { createProcessType, createProject, createTag, updateProject } from "../actions";
+import { createClientInline, createProcessType, createProject, createTag, updateProject } from "../actions";
 import type { CatalogOption, FormCatalogs, ProjectRow } from "./types";
 
 /// Sentinela para "sin selección" (Radix Select no admite value="").
 const NONE = "none";
+/// Sentinela del selector de cliente que abre el subdiálogo de alta (US5 de
+/// FASE 3): nunca llega al estado del formulario.
+const CREATE_CLIENT = "__create-client__";
+
+/// Estado local del subdiálogo «Crear cliente…» (independiente del RHF del
+/// proyecto: cancelar o fallar no toca el formulario).
+const EMPTY_NEW_CLIENT = { name: "", email: "", phone: "" };
 
 const formSchema = z
   .object({
@@ -98,6 +105,10 @@ export function ProjectFormDialog({
   const [selectedTagIds, setSelectedTagIds] = React.useState<string[]>(project?.tags.map((tag) => tag.id) ?? []);
   const [newTagName, setNewTagName] = React.useState("");
   const [creatingTag, setCreatingTag] = React.useState(false);
+  const [clientOptions, setClientOptions] = React.useState<CatalogOption[]>(catalogs.clients);
+  const [clientDialogOpen, setClientDialogOpen] = React.useState(false);
+  const [newClient, setNewClient] = React.useState(EMPTY_NEW_CLIENT);
+  const [creatingClient, setCreatingClient] = React.useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -132,6 +143,27 @@ export function ProjectFormDialog({
     setSelectedTagIds((prev) => [...prev, result.data.id]);
     setNewTagName("");
     toast.success(`Etiqueta «${result.data.name}» creada.`);
+  };
+
+  /// Alta al vuelo (US5 de FASE 3): crea el cliente, lo añade a la lista local
+  /// y lo deja seleccionado. El estado RHF del proyecto no se toca en ningún
+  /// otro campo; cancelar cierra el subdiálogo sin efectos.
+  const handleCreateClient = async () => {
+    if (newClient.name.trim() === "") {
+      return;
+    }
+    setCreatingClient(true);
+    const result = await createClientInline(newClient);
+    setCreatingClient(false);
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    setClientOptions((prev) => [...prev, result.data].sort((a, b) => a.name.localeCompare(b.name, "es")));
+    form.setValue("clientId", result.data.id);
+    setNewClient(EMPTY_NEW_CLIENT);
+    setClientDialogOpen(false);
+    toast.success(`Cliente «${result.data.name}» creado y seleccionado.`);
   };
 
   const handleCreateType = async () => {
@@ -241,17 +273,28 @@ export function ProjectFormDialog({
                 render={({ field }) => (
                   <Field className="gap-1.5">
                     <FieldLabel htmlFor="project-client">Cliente</FieldLabel>
-                    <Select value={field.value} onValueChange={field.onChange}>
+                    <Select
+                      value={field.value}
+                      onValueChange={(value) => {
+                        // La opción de alta abre el subdiálogo sin tocar el valor.
+                        if (value === CREATE_CLIENT) {
+                          setClientDialogOpen(true);
+                          return;
+                        }
+                        field.onChange(value);
+                      }}
+                    >
                       <SelectTrigger id="project-client" className="w-full">
                         <SelectValue placeholder="Sin cliente" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value={NONE}>Sin cliente</SelectItem>
-                        {catalogs.clients.map((client) => (
+                        {clientOptions.map((client) => (
                           <SelectItem key={client.id} value={client.id}>
                             {client.name}
                           </SelectItem>
                         ))}
+                        {canManageCatalogs && <SelectItem value={CREATE_CLIENT}>Crear cliente…</SelectItem>}
                       </SelectContent>
                     </Select>
                   </Field>
@@ -433,6 +476,62 @@ export function ProjectFormDialog({
             </Button>
           </DialogFooter>
         </form>
+
+        {/* Subdiálogo de alta de cliente (US5 de FASE 3): overlay hermano, el
+            formulario del proyecto sigue montado y conserva todo su estado. */}
+        <Dialog open={clientDialogOpen} onOpenChange={setClientDialogOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Crear cliente</DialogTitle>
+              <DialogDescription>
+                Alta rápida: solo el nombre es obligatorio. El cliente quedará seleccionado en el proyecto.
+              </DialogDescription>
+            </DialogHeader>
+            <FieldGroup className="gap-4">
+              <Field className="gap-1.5">
+                <FieldLabel htmlFor="inline-client-name">Nombre</FieldLabel>
+                <Input
+                  id="inline-client-name"
+                  value={newClient.name}
+                  onChange={(event) => setNewClient((prev) => ({ ...prev, name: event.target.value }))}
+                  placeholder="Nombre del contacto o empresa"
+                />
+              </Field>
+              <Field className="gap-1.5">
+                <FieldLabel htmlFor="inline-client-email">Email</FieldLabel>
+                <Input
+                  id="inline-client-email"
+                  type="email"
+                  value={newClient.email}
+                  onChange={(event) => setNewClient((prev) => ({ ...prev, email: event.target.value }))}
+                  placeholder="contacto@empresa.com"
+                />
+              </Field>
+              <Field className="gap-1.5">
+                <FieldLabel htmlFor="inline-client-phone">Teléfono</FieldLabel>
+                <Input
+                  id="inline-client-phone"
+                  type="tel"
+                  value={newClient.phone}
+                  onChange={(event) => setNewClient((prev) => ({ ...prev, phone: event.target.value }))}
+                  placeholder="+57 300 123 4567"
+                />
+              </Field>
+            </FieldGroup>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setClientDialogOpen(false)}>
+                Cancelar
+              </Button>
+              <Button
+                type="button"
+                onClick={handleCreateClient}
+                disabled={creatingClient || newClient.name.trim() === ""}
+              >
+                {creatingClient ? "Creando…" : "Crear y seleccionar"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </DialogContent>
     </Dialog>
   );

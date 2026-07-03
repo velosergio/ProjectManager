@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { ZodError } from "zod";
 
+import { createClient } from "@/lib/clients/mutations";
 import { DuplicateNameError, ForbiddenError, MissingTenantContextError, NotFoundError } from "@/lib/errors";
 import { mapGatingError } from "@/lib/plans/gating-response";
 import type { MutationActor } from "@/lib/projects/mutations";
@@ -129,6 +130,23 @@ export async function deleteTask(projectId: string, taskId: string): Promise<Act
     await mutations.deleteTask(db, actor, taskId);
     revalidateProjects(projectId);
     return { ok: true, data: undefined };
+  } catch (error) {
+    return { ok: false, error: mapError(error) };
+  }
+}
+
+// ── Clientes ─────────────────────────────────────────────────────────────────
+
+/// Alta mínima de un cliente desde el formulario de proyecto (US5, FR-016 de
+/// FASE 3): delega en la lógica de la feature de clientes y devuelve lo justo
+/// para seleccionarlo sin desmontar el formulario.
+export async function createClientInline(input: unknown): Promise<ActionResult<{ id: string; name: string }>> {
+  try {
+    const { db, actor } = await resolveActor();
+    const client = await createClient(db, actor, input);
+    revalidatePath("/dashboard/clients");
+    revalidateProjects();
+    return { ok: true, data: { id: client.id, name: client.name } };
   } catch (error) {
     return { ok: false, error: mapError(error) };
   }

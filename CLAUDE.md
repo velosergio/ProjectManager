@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan
-at specs/005-project-management/plan.md
+at specs/006-client-management/plan.md
 <!-- SPECKIT END -->
 
 ## Idioma
@@ -153,7 +153,9 @@ el JWT de NextAuth (ver `src/types/next-auth.d.ts`).
 
 ## Producción
 
-`Dockerfile` multi-stage (deps → builder → runner) con `output: standalone`, pensado para EasyPanel;
-MariaDB y Redis se gestionan como servicios externos. El entrypoint corre migraciones antes de
-arrancar. Variables de entorno en `.env.example` (copiar a `.env.local`): `DATABASE_URL`,
+`Dockerfile` multi-stage (deps → builder → runner) con `output: standalone` y Node 24, pensado
+para EasyPanel; MariaDB y Redis se gestionan como servicios externos. El contenedor **solo levanta
+la app** (`CMD node server.js`, sin entrypoint); las migraciones se aplican manualmente desde la
+consola del contenedor con `npx prisma migrate deploy` (el CLI de Prisma va incluido en la imagen).
+Variables de entorno en `.env.example` (copiar a `.env.local`): `DATABASE_URL`,
 `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, `REDIS_URL`, config de MinIO, SMTP opcional.

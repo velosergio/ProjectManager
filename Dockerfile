@@ -1,42 +1,48 @@
 # =============================================================================
 # Project Manager — Dockerfile
-# Multi-stage build optimized for EasyPanel deployment.
-# External services (MariaDB, Redis) are managed separately.
+# Build multi-stage optimizado para despliegue en EasyPanel.
+# El contenedor SOLO levanta la app Next.js (standalone); MariaDB y Redis son
+# servicios externos gestionados por EasyPanel.
 #
-# Stages:
-#   1. deps     — install production + dev dependencies
-#   2. builder  — generate Prisma client + build Next.js
-#   3. runner   — minimal production image (standalone output)
+# Etapas:
+#   1. deps     — instala dependencias (prod + dev, necesarias para el build)
+#   2. builder  — genera el cliente Prisma + compila Next.js
+#   3. runner   — imagen mínima de producción (output standalone)
+#
+# Migraciones: NO se ejecutan en el arranque. El CLI de Prisma queda incluido
+# en la imagen para poder aplicarlas manualmente desde la consola del
+# contenedor en EasyPanel:  npx prisma migrate deploy
 # =============================================================================
 
-ARG NODE_VERSION=22-alpine
+ARG NODE_VERSION=24-alpine
 
 # -----------------------------------------------------------------------------
-# Stage 1: deps — install all dependencies
+# Etapa 1: deps — instala todas las dependencias
 # -----------------------------------------------------------------------------
 FROM node:${NODE_VERSION} AS deps
 
 WORKDIR /app
 
-# Install libc compat for Alpine (needed by some native modules)
+# Compatibilidad libc en Alpine (requerida por algunos módulos nativos)
 RUN apk add --no-cache libc6-compat openssl
 
-# Copy only lockfiles first to maximise layer caching
+# Copiar solo los manifiestos primero para maximizar la caché de capas
 COPY package.json package-lock.json ./
 COPY prisma ./prisma
 
-# Install all deps (including devDeps needed for build)
+# Instala todas las deps (incluye devDeps necesarias para el build)
 RUN npm ci
 
 # -----------------------------------------------------------------------------
-# Stage 2: builder — generate Prisma client + compile Next.js
+# Etapa 2: builder — genera cliente Prisma + compila Next.js
 # -----------------------------------------------------------------------------
 FROM node:${NODE_VERSION} AS builder
 
 WORKDIR /app
 
-# Build-time env vars — real values are injected at runtime via EasyPanel.
-# These placeholders satisfy Next.js static analysis without baking in secrets.
+# Variables de build — los valores reales se inyectan en runtime vía EasyPanel.
+# Estos placeholders satisfacen el análisis estático de Next.js sin hornear
+# secretos en la imagen. NO pasar secretos reales como build args.
 ARG DATABASE_URL="mysql://placeholder:placeholder@placeholder:3306/project_manager"
 ARG NEXTAUTH_URL="http://localhost:3000"
 ARG NEXTAUTH_SECRET="build-time-placeholder-replace-at-runtime"
@@ -52,48 +58,43 @@ ENV NODE_ENV=production
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Generate Prisma client for the target platform
+# Genera el cliente Prisma para la plataforma destino
 RUN npx prisma generate
 
-# Build Next.js (produces .next/standalone)
+# Compila Next.js (produce .next/standalone)
 RUN npm run build
 
 # -----------------------------------------------------------------------------
-# Stage 3: runner — minimal production image
+# Etapa 3: runner — imagen mínima de producción
 # -----------------------------------------------------------------------------
 FROM node:${NODE_VERSION} AS runner
 
 WORKDIR /app
 
-# Required for Prisma binary compatibility on Alpine
+# Compatibilidad de binarios de Prisma en Alpine
 RUN apk add --no-cache libc6-compat openssl
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Create a non-root user for security
+# Usuario no-root por seguridad
 RUN addgroup --system --gid 1001 nodejs \
   && adduser --system --uid 1001 nextjs
 
-# Copy standalone build output
+# Output standalone de Next.js
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
-# Prisma 7: el cliente generado se empaqueta dentro de .next/standalone, así que
-# ya NO existe node_modules/.prisma. Para poder ejecutar `prisma migrate deploy`
-# en el arranque copiamos el schema + migraciones, el archivo de configuración
-# (aporta la URL del datasource, que ya no vive en el schema) y el CLI de Prisma
-# con sus dependencias (@prisma/*, prisma, dotenv).
+# Prisma 7: el cliente generado ya viaja dentro de .next/standalone. Copiamos
+# además el schema + migraciones, la config (aporta la URL del datasource) y el
+# CLI de Prisma con sus dependencias, SOLO para poder ejecutar migraciones a
+# demanda desde la consola del contenedor (npx prisma migrate deploy).
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /app/prisma.config.ts ./prisma.config.ts
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/prisma ./node_modules/prisma
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/dotenv ./node_modules/dotenv
-
-# Copy the startup script
-COPY --chown=nextjs:nodejs docker-entrypoint.sh ./
-RUN chmod +x ./docker-entrypoint.sh
 
 USER nextjs
 
@@ -102,5 +103,5 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-# Run migrations then start the app
-ENTRYPOINT ["./docker-entrypoint.sh"]
+# Solo levanta la app — sin entrypoint ni migraciones en el arranque
+CMD ["node", "server.js"]
