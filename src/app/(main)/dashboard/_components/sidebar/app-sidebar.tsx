@@ -66,7 +66,7 @@ const _data = {
 type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
   access?: AccessContext | null;
   planLabel?: string | null;
-  user: { name: string; email: string; avatar: string; role: UserRole };
+  user: { name: string; email: string; avatar: string; role: UserRole; tenantId: string | null };
   notificationPreferences: NotificationPreferenceView;
 };
 

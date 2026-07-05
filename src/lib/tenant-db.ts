@@ -2,8 +2,8 @@ import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 
 /// Modelos de negocio sujetos al scoping automático por `tenantId`.
-/// `User`, `Plan`, `PasswordResetToken` y los modelos del adapter de NextAuth
-/// quedan FUERA (se acceden con el cliente base).
+/// `User`, `Plan`, `PasswordResetToken`, `InvitationToken` y los modelos del
+/// adapter de NextAuth quedan FUERA (se acceden con el cliente base).
 export const SCOPED_MODELS = new Set<string>([
   "Client",
   "Project",
@@ -14,6 +14,8 @@ export const SCOPED_MODELS = new Set<string>([
   "Subscription",
   "Tag",
   "ProcessType",
+  "Team",
+  "Note",
 ]);
 
 type AnyArgs = Record<string, unknown>;

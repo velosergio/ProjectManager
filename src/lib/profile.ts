@@ -7,7 +7,7 @@ import { prisma } from "@/lib/prisma";
 export const profileSchema = z.object({
   name: z.string().min(2, "El nombre debe tener al menos 2 caracteres."),
   // URL del avatar; vacío = sin avatar (se guarda como null). La subida a MinIO queda pendiente.
-  image: z.string().url("Ingresa una URL de imagen válida.").or(z.literal("")).optional(),
+  image: z.url("Ingresa una URL de imagen válida.").or(z.literal("")).optional(),
 });
 
 export type ProfileInput = z.infer<typeof profileSchema>;

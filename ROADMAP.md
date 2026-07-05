@@ -270,13 +270,13 @@ Campos:
 
 ### Funciones — equipo
 
-* [ ] Invitar y dar de alta miembros del tenant
-* [ ] Asignar y cambiar roles
-* [ ] CRUD equipos de trabajo
-* [ ] Listar miembros y equipos
-* [ ] Desactivar o revocar acceso
-* [ ] Respetar cuota de usuarios por plan
-* [ ] Carga por usuario (tareas/proyectos asignados) — alimenta FASE 7
+* [x] Invitar y dar de alta miembros del tenant *(invitación por enlace, 7 días, un solo uso — spec 007)*
+* [x] Asignar y cambiar roles *(con guard de último admin)*
+* [x] CRUD equipos de trabajo *(membresía M:N, detalle con composición)*
+* [x] Listar miembros y equipos *(pestaña «Miembros» en ajustes; sección «Equipos» en el sidebar)*
+* [x] Desactivar o revocar acceso *(revocación efectiva en login, datos y layout)*
+* [x] Respetar cuota de usuarios por plan *(activos + invitados, transacción serializable)*
+* [x] Carga por usuario (tareas/proyectos asignados) — alimenta FASE 7
 
 ## Notas
 
@@ -300,13 +300,13 @@ Campos:
 
 ### Funciones — notas
 
-* [ ] CRUD notas
-* [ ] Filtro y listado por alcance
-* [ ] Búsqueda por título y contenido
-* [ ] Notas en vista detalle de proyecto, tarea y equipo
-* [ ] Widget «Notas recientes» del panel con datos reales
-* [ ] Acción rápida «Nueva nota» operativa
-* [ ] Permisos por rol (quién puede crear/editar/eliminar según alcance)
+* [x] CRUD notas *(alcance único validado en servidor; el alcance no se reasigna al editar)*
+* [x] Filtro y listado por alcance *(listado central paginado en `/dashboard/notes`)*
+* [x] Búsqueda por título y contenido *(insensible a acentos y mayúsculas)*
+* [x] Notas en vista detalle de proyecto, tarea (Sheet lateral) y equipo
+* [x] Widget «Notas recientes» del panel con datos reales
+* [x] Acción rápida «Nueva nota» operativa
+* [x] Permisos por rol (crear: todos salvo viewer; editar/eliminar: autor o admin/manager)
 
 ---
 
@@ -372,10 +372,10 @@ Integrados con datos reales (FASE 2 / spec 004):
 
 Aún con datos estáticos o sin acción (pendiente de esta fase o de fases posteriores):
 
-* [ ] Acciones rápidas — botones sin enlace (nota, tarea, proyecto, meta, archivo) *(nota → FASE 4)*
+* [ ] Acciones rápidas — botones sin enlace (tarea, proyecto, meta, archivo) *(«Nueva nota» conectada en FASE 4)*
 * [ ] Calendario lateral — selector de fecha sin eventos del sistema
 * [ ] Concentración — temporizador Pomodoro placeholder
-* [ ] Notas recientes — contenido fijo de demo *(sustituir en FASE 4)*
+* [x] Notas recientes — sustituido por datos reales del tenant en FASE 4
 * [ ] Resumen semanal lateral — metas fijas de demo (duplica parcialmente las tarjetas de resumen)
 * [ ] Bloques Negocio / Finanzas / Analítica / Academia — widgets demo de plantilla (CRM, finance, analytics, academy)
 
@@ -406,7 +406,7 @@ Aún con datos estáticos o sin acción (pendiente de esta fase o de fases poste
 ### Limpieza del panel
 
 * [ ] Retirar o reemplazar los bloques demo (Negocio, Finanzas, Analítica, Academia) tras validación humana (spec 004, US3)
-* [ ] Conectar acciones rápidas a flujos reales (nueva nota → FASE 4, nuevo proyecto, nueva tarea, subir archivo)
+* [ ] Conectar acciones rápidas a flujos reales (nueva nota ✅ FASE 4; falta nuevo proyecto, nueva tarea, subir archivo)
 
 ### Consola Mango (medición, seguimiento y analítica global)
 
@@ -594,6 +594,9 @@ la identidad **Project Manager** antes del lanzamiento.
 * [ ] Textos de UI: páginas de autenticación, landing y emails transaccionales
 * [ ] Retirar o aislar las rutas demo heredadas de la plantilla (crm, finance, ecommerce, logistics, etc.)
 * [ ] Actualizar README y documentación del proyecto
+* [ ] Actualizar todas las vistas con el nuevo branding
+* [ ] Metadatos y logo actualizados
+* [ ] Logo personalizado subido
 
 ---
 
@@ -635,3 +638,13 @@ aplicación a las necesidades de cada tenant.
 * [ ] Aislamiento: un módulo solo accede a datos del tenant (vía `getTenantDb()`)
 * [ ] Administración de módulos desde el panel del `admin` del tenant
 * [ ] Gestión global de módulos desde la consola `mango` (habilitar/deshabilitar por tenant o plan)
+
+# Minor Fix
+- En el panel de bsuqueda no mostrar Consola Mango a usuarios que no tengan rol Mango
+- Agregar CRUDs uno de palabras de bienvenida y otros de motivacionales, habilitar la funcion de activar o desactivar
+
+# New Features
+- diseñar onboarding
+- nuevo sistema de temas (personalizacion avanzada)
+- incluir test e2e con playwright
+- incluir feature de test con covertura del 100%

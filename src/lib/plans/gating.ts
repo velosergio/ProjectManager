@@ -43,7 +43,9 @@ export async function assertWithinQuota(
   if (resource === "projects") {
     current = await db.project.count({ where: { tenantId } });
   } else if (resource === "users") {
-    current = await db.user.count({ where: { tenantId } });
+    // Activos e invitados consumen cupo; los inactivos lo liberan (FASE 4,
+    // FR-009 / Clarifications).
+    current = await db.user.count({ where: { tenantId, status: { in: ["ACTIVE", "INVITED"] } } });
   } else {
     const aggregate = await db.fileAsset.aggregate({ _sum: { sizeBytes: true }, where: { tenantId } });
     current = Number(aggregate._sum.sizeBytes ?? BigInt(0));

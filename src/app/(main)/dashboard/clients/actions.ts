@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { ZodError } from "zod";
 
+import { requireUser } from "@/lib/auth";
 import type { ClientMutationActor } from "@/lib/clients/mutations";
 import * as mutations from "@/lib/clients/mutations";
 import { DuplicateNameError, ForbiddenError, MissingTenantContextError, NotFoundError } from "@/lib/errors";
@@ -51,6 +52,7 @@ function revalidateClients(clientId?: string) {
 // ── Clientes ─────────────────────────────────────────────────────────────────
 
 export async function createClient(input: unknown): Promise<ActionResult<{ id: string }>> {
+  await requireUser();
   try {
     const { db, actor } = await resolveActor();
     const client = await mutations.createClient(db, actor, input);
@@ -62,6 +64,7 @@ export async function createClient(input: unknown): Promise<ActionResult<{ id: s
 }
 
 export async function updateClient(clientId: string, input: unknown): Promise<ActionResult> {
+  await requireUser();
   try {
     const { db, actor } = await resolveActor();
     await mutations.updateClient(db, actor, clientId, input);
@@ -73,6 +76,7 @@ export async function updateClient(clientId: string, input: unknown): Promise<Ac
 }
 
 export async function deleteClient(clientId: string): Promise<ActionResult> {
+  await requireUser();
   try {
     const { db, actor } = await resolveActor();
     await mutations.deleteClient(db, actor, clientId);
@@ -89,6 +93,7 @@ export async function deleteClient(clientId: string): Promise<ActionResult> {
 /// Solo lectura: cuántos proyectos quedarán sin cliente al eliminarlo
 /// (texto del diálogo de confirmación, FR-005).
 export async function getClientDeletionImpact(clientId: string): Promise<ActionResult<{ projectCount: number }>> {
+  await requireUser();
   try {
     const { db } = await resolveActor();
     const impact = await mutations.getDeletionImpact(db, clientId);
@@ -103,6 +108,7 @@ export async function getClientDeletionImpact(clientId: string): Promise<ActionR
 /// Crea una etiqueta desde el asignador del formulario de cliente. Reutiliza
 /// la mutación del catálogo de la FASE 2 (mismo modelo `Tag`).
 export async function createTagForClient(input: unknown): Promise<ActionResult<{ id: string; name: string }>> {
+  await requireUser();
   try {
     const { db, actor } = await resolveActor();
     const tag = await createTag(db, actor, input);

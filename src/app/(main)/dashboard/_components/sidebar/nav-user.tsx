@@ -31,7 +31,7 @@ const ROLE_LABELS: Record<UserRole, string> = {
 };
 
 type NavUserProps = {
-  readonly user: { name: string; email: string; avatar: string; role: UserRole };
+  readonly user: { name: string; email: string; avatar: string; role: UserRole; tenantId: string | null };
   readonly planLabel: string | null;
   readonly notificationPreferences: NotificationPreferenceView;
 };
@@ -108,6 +108,8 @@ export function NavUser({ user, planLabel, notificationPreferences }: NavUserPro
         user={{ name: user.name, email: user.email, image: user.avatar }}
         planLabel={planLabel}
         roleLabel={ROLE_LABELS[user.role]}
+        role={user.role}
+        tenantId={user.tenantId}
         notificationPreferences={notificationPreferences}
       />
     </SidebarMenu>

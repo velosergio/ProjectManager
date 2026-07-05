@@ -4,7 +4,7 @@ import { z } from "zod";
 
 import { requestPasswordReset } from "@/lib/password-reset";
 
-const schema = z.object({ email: z.string().email() });
+const schema = z.object({ email: z.email() });
 
 export async function POST(request: Request) {
   const body = (await request.json().catch(() => null)) as unknown;

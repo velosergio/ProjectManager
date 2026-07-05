@@ -17,17 +17,20 @@ import { cn } from "@/lib/utils";
 import type { CatalogOption, TaskRow } from "../../_components/types";
 import { deleteTask, toggleTaskDone } from "../../actions";
 import { TaskFormDialog } from "./task-form-dialog";
+import { TaskNotesSheet } from "./task-notes-sheet";
 
 interface TaskListProps {
+  tenantId: string;
   projectId: string;
   tasks: TaskRow[];
   members: CatalogOption[];
   canManage: boolean;
+  canCreateNotes: boolean;
 }
 
 /// Lista de tareas del proyecto (FR-009/FR-019): completar con persistencia
 /// real, vencidas destacadas y estados vacíos accionables.
-export function TaskList({ projectId, tasks, members, canManage }: TaskListProps) {
+export function TaskList({ tenantId, projectId, tasks, members, canManage, canCreateNotes }: TaskListProps) {
   const [isPending, startTransition] = React.useTransition();
 
   const handleToggle = (task: TaskRow, checked: boolean) => {
@@ -114,6 +117,12 @@ export function TaskList({ projectId, tasks, members, canManage }: TaskListProps
                   <span className="hidden text-muted-foreground text-xs sm:inline">
                     {task.assignee?.name ?? "Sin asignar"}
                   </span>
+                  <TaskNotesSheet
+                    tenantId={tenantId}
+                    taskId={task.id}
+                    taskTitle={task.title}
+                    canCreate={canCreateNotes}
+                  />
                   {canManage && (
                     <>
                       <TaskFormDialog projectId={projectId} task={task} members={members} />

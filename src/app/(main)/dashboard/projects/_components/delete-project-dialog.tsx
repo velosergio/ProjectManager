@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 
+import { getProjectNotesImpactAction } from "../../notes/actions";
 import { deleteProject } from "../actions";
 
 interface DeleteProjectDialogProps {
@@ -30,10 +31,30 @@ interface DeleteProjectDialogProps {
 }
 
 /// Confirmación de eliminación definitiva (FR-002): avisa del arrastre de
-/// tareas antes de borrar.
+/// tareas y del conteo de notas que caerán en cascada (FASE 4, FR-023).
 export function DeleteProjectDialog({ projectId, projectName, redirectTo }: DeleteProjectDialogProps) {
   const router = useRouter();
   const [isPending, startTransition] = React.useTransition();
+  const [noteCount, setNoteCount] = React.useState<number | null>(null);
+
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      return;
+    }
+    setNoteCount(null);
+    void getProjectNotesImpactAction(projectId).then((result) => {
+      setNoteCount(result.ok ? result.data.noteCount : 0);
+    });
+  };
+
+  const notesText =
+    noteCount === null
+      ? "Calculando notas asociadas…"
+      : noteCount === 0
+        ? "No hay notas asociadas."
+        : noteCount === 1
+          ? "Se eliminará también 1 nota asociada al proyecto o a sus tareas."
+          : `Se eliminarán también ${noteCount} notas asociadas al proyecto o a sus tareas.`;
 
   const handleDelete = () => {
     startTransition(async () => {
@@ -50,7 +71,7 @@ export function DeleteProjectDialog({ projectId, projectName, redirectTo }: Dele
   };
 
   return (
-    <AlertDialog>
+    <AlertDialog onOpenChange={handleOpenChange}>
       <AlertDialogTrigger asChild>
         <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
           <Trash2 data-icon="inline-start" />
@@ -61,8 +82,8 @@ export function DeleteProjectDialog({ projectId, projectName, redirectTo }: Dele
         <AlertDialogHeader>
           <AlertDialogTitle>¿Eliminar «{projectName}»?</AlertDialogTitle>
           <AlertDialogDescription>
-            Esta acción es definitiva: se eliminarán también todas las tareas asociadas al proyecto. Si solo quieres
-            retirarlo de la operación, cambia su estado a «Archivado».
+            Esta acción es definitiva: se eliminarán también todas las tareas asociadas al proyecto. {notesText} Si solo
+            quieres retirarlo de la operación, cambia su estado a «Archivado».
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

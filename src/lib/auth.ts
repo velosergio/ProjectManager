@@ -31,6 +31,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         // Sin usuario o usuario sólo con OAuth (sin contraseña).
         if (!user?.password) return null;
 
+        // Solo cuentas activas pueden iniciar sesión (FASE 4, FR-007). Mensaje
+        // genérico: no se revela si la cuenta existe ni su estado.
+        if (user.status !== "ACTIVE") return null;
+
         const passwordMatches = await bcrypt.compare(password, user.password);
         if (!passwordMatches) return null;
 
@@ -46,3 +50,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
 });
+
+/// Exige una sesión activa. Úsalo como PRIMERA sentencia de cada Server Action
+/// para que la regla `react-doctor/server-auth-actions` detecte el chequeo de
+/// autenticación y para lanzar hard-fail en accesos sin sesión (defensa en
+/// profundidad; el middleware también protege /dashboard).
+export async function requireUser() {
+  const session = await auth();
+  if (!session?.user) throw new Error("Unauthorized");
+  return session.user;
+}

@@ -1,5 +1,6 @@
 "use server";
 
+import { requireUser } from "@/lib/auth";
 import { MissingTenantContextError } from "@/lib/errors";
 import {
   getOrCreateNotificationPreferences,
@@ -11,6 +12,7 @@ import { getTenantContext } from "@/lib/tenant-context";
 
 /// Lee (o crea con defaults) las preferencias de notificación del usuario.
 export async function getNotificationPreferences(): Promise<NotificationPreferenceView> {
+  await requireUser();
   const ctx = await getTenantContext();
   if (!ctx) {
     throw new MissingTenantContextError("No hay sesión activa.");
@@ -22,6 +24,7 @@ export async function getNotificationPreferences(): Promise<NotificationPreferen
 export async function updateNotificationPreferences(
   input: NotificationPreferenceInput,
 ): Promise<NotificationPreferenceView> {
+  await requireUser();
   const ctx = await getTenantContext();
   if (!ctx) {
     throw new MissingTenantContextError("No hay sesión activa.");

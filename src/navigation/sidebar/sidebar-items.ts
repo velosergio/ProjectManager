@@ -8,7 +8,9 @@ import {
   type LucideIcon,
   ReceiptText,
   ShieldCheck,
+  StickyNote,
   Users,
+  UsersRound,
 } from "lucide-react";
 
 import type { UserRole } from "@/generated/prisma/client";
@@ -94,6 +96,18 @@ export const sidebarItems: NavGroup[] = [
         title: "Clientes",
         url: "/dashboard/clients",
         icon: Contact,
+      },
+      {
+        id: "teams",
+        title: "Equipos",
+        url: "/dashboard/teams",
+        icon: UsersRound,
+      },
+      {
+        id: "notes",
+        title: "Notas",
+        url: "/dashboard/notes",
+        icon: StickyNote,
       },
     ],
   },

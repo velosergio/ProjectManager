@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { ZodError } from "zod";
 
+import { requireUser } from "@/lib/auth";
 import { createClient } from "@/lib/clients/mutations";
 import { DuplicateNameError, ForbiddenError, MissingTenantContextError, NotFoundError } from "@/lib/errors";
 import { mapGatingError } from "@/lib/plans/gating-response";
@@ -57,6 +58,7 @@ function revalidateProjects(projectId?: string) {
 // ── Proyectos ────────────────────────────────────────────────────────────────
 
 export async function createProject(input: unknown): Promise<ActionResult<{ id: string }>> {
+  await requireUser();
   try {
     const { db, actor } = await resolveActor();
     const project = await mutations.createProject(db, actor, input);
@@ -68,6 +70,7 @@ export async function createProject(input: unknown): Promise<ActionResult<{ id: 
 }
 
 export async function updateProject(projectId: string, input: unknown): Promise<ActionResult> {
+  await requireUser();
   try {
     const { db, actor } = await resolveActor();
     await mutations.updateProject(db, actor, projectId, input);
@@ -79,6 +82,7 @@ export async function updateProject(projectId: string, input: unknown): Promise<
 }
 
 export async function deleteProject(projectId: string): Promise<ActionResult> {
+  await requireUser();
   try {
     const { db, actor } = await resolveActor();
     await mutations.deleteProject(db, actor, projectId);
@@ -92,6 +96,7 @@ export async function deleteProject(projectId: string): Promise<ActionResult> {
 // ── Tareas ───────────────────────────────────────────────────────────────────
 
 export async function createTask(projectId: string, input: unknown): Promise<ActionResult<{ id: string }>> {
+  await requireUser();
   try {
     const { db, actor } = await resolveActor();
     const task = await mutations.createTask(db, actor, projectId, input);
@@ -103,6 +108,7 @@ export async function createTask(projectId: string, input: unknown): Promise<Act
 }
 
 export async function updateTask(projectId: string, taskId: string, input: unknown): Promise<ActionResult> {
+  await requireUser();
   try {
     const { db, actor } = await resolveActor();
     await mutations.updateTask(db, actor, taskId, input);
@@ -114,6 +120,7 @@ export async function updateTask(projectId: string, taskId: string, input: unkno
 }
 
 export async function toggleTaskDone(taskId: string, done: boolean, projectId?: string): Promise<ActionResult> {
+  await requireUser();
   try {
     const { db, actor } = await resolveActor();
     await mutations.toggleTaskDone(db, actor, taskId, done);
@@ -125,6 +132,7 @@ export async function toggleTaskDone(taskId: string, done: boolean, projectId?: 
 }
 
 export async function deleteTask(projectId: string, taskId: string): Promise<ActionResult> {
+  await requireUser();
   try {
     const { db, actor } = await resolveActor();
     await mutations.deleteTask(db, actor, taskId);
@@ -141,6 +149,7 @@ export async function deleteTask(projectId: string, taskId: string): Promise<Act
 /// FASE 3): delega en la lógica de la feature de clientes y devuelve lo justo
 /// para seleccionarlo sin desmontar el formulario.
 export async function createClientInline(input: unknown): Promise<ActionResult<{ id: string; name: string }>> {
+  await requireUser();
   try {
     const { db, actor } = await resolveActor();
     const client = await createClient(db, actor, input);
@@ -155,6 +164,7 @@ export async function createClientInline(input: unknown): Promise<ActionResult<{
 // ── Etiquetas ────────────────────────────────────────────────────────────────
 
 export async function createTag(input: unknown): Promise<ActionResult<{ id: string; name: string }>> {
+  await requireUser();
   try {
     const { db, actor } = await resolveActor();
     const tag = await mutations.createTag(db, actor, input);
@@ -166,6 +176,7 @@ export async function createTag(input: unknown): Promise<ActionResult<{ id: stri
 }
 
 export async function renameTag(tagId: string, input: unknown): Promise<ActionResult> {
+  await requireUser();
   try {
     const { db, actor } = await resolveActor();
     await mutations.renameTag(db, actor, tagId, input);
@@ -177,6 +188,7 @@ export async function renameTag(tagId: string, input: unknown): Promise<ActionRe
 }
 
 export async function deleteTag(tagId: string): Promise<ActionResult> {
+  await requireUser();
   try {
     const { db, actor } = await resolveActor();
     await mutations.deleteTag(db, actor, tagId);
@@ -190,6 +202,7 @@ export async function deleteTag(tagId: string): Promise<ActionResult> {
 // ── Tipos de proceso ─────────────────────────────────────────────────────────
 
 export async function createProcessType(input: unknown): Promise<ActionResult<{ id: string; name: string }>> {
+  await requireUser();
   try {
     const { db, actor } = await resolveActor();
     const type = await mutations.createProcessType(db, actor, input);
@@ -201,6 +214,7 @@ export async function createProcessType(input: unknown): Promise<ActionResult<{ 
 }
 
 export async function renameProcessType(typeId: string, input: unknown): Promise<ActionResult> {
+  await requireUser();
   try {
     const { db, actor } = await resolveActor();
     await mutations.renameProcessType(db, actor, typeId, input);
@@ -212,6 +226,7 @@ export async function renameProcessType(typeId: string, input: unknown): Promise
 }
 
 export async function deleteProcessType(typeId: string): Promise<ActionResult> {
+  await requireUser();
   try {
     const { db, actor } = await resolveActor();
     await mutations.deleteProcessType(db, actor, typeId);

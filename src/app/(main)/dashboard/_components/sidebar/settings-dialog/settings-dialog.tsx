@@ -1,19 +1,22 @@
 "use client";
 
-import { Bell, CreditCard, Palette, UserRound } from "lucide-react";
+import { Bell, CreditCard, Palette, UserRound, Users } from "lucide-react";
 
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import type { UserRole } from "@/generated/prisma/client";
+import { canManageMembers } from "@/lib/authz-members";
 import type { NotificationPreferenceView } from "@/lib/notifications";
 
 import { AccountSettings } from "./account-settings";
 import { AppearanceSettings } from "./appearance-settings";
+import { MembersSettings } from "./members-settings";
 import { NotificationsSettings } from "./notifications-settings";
 import { PlanSettings } from "./plan-settings";
 
 /// Secciones disponibles en el modal de Configuración.
-export type SettingsSection = "appearance" | "account" | "notifications" | "plan";
+export type SettingsSection = "appearance" | "account" | "notifications" | "plan" | "members";
 
 interface SettingsDialogProps {
   open: boolean;
@@ -23,6 +26,9 @@ interface SettingsDialogProps {
   user: { name: string; email: string; image: string };
   planLabel: string | null;
   roleLabel: string;
+  /// Rol y tenant reales de la sesión: gatean la pestaña «Miembros» (FASE 4).
+  role: UserRole;
+  tenantId: string | null;
   notificationPreferences: NotificationPreferenceView;
 }
 
@@ -36,8 +42,12 @@ export function SettingsDialog({
   user,
   planLabel,
   roleLabel,
+  role,
+  tenantId,
   notificationPreferences,
 }: SettingsDialogProps) {
+  const showMembers = canManageMembers(role);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="gap-0 overflow-hidden p-0 sm:max-w-2xl">
@@ -73,6 +83,12 @@ export function SettingsDialog({
               <CreditCard className="size-4" />
               Plan
             </TabsTrigger>
+            {showMembers && (
+              <TabsTrigger value="members" className="w-full justify-start gap-2 px-2">
+                <Users className="size-4" />
+                Miembros
+              </TabsTrigger>
+            )}
           </TabsList>
 
           {/* Columna de contenido */}
@@ -94,6 +110,12 @@ export function SettingsDialog({
                 <TabsContent value="plan">
                   <PlanSettings planLabel={planLabel} roleLabel={roleLabel} />
                 </TabsContent>
+
+                {showMembers && (
+                  <TabsContent value="members">
+                    <MembersSettings role={role} tenantId={tenantId} />
+                  </TabsContent>
+                )}
               </div>
             </ScrollArea>
           </div>

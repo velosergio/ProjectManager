@@ -2,14 +2,22 @@
 
 import { cookies } from "next/headers";
 
+import { requireUser } from "@/lib/auth";
 import { ForbiddenError } from "@/lib/errors";
 import { getTenantContext, MANGO_TENANT_COOKIE } from "@/lib/tenant-context";
 
+// Falso positivo intencional (server-auth-actions): estas 3 acciones son de
+// preferencias públicas (tema, layout del sidebar) que operan sobre las cookies
+// del propio caller y se usan desde páginas no autenticadas (login/registro).
+// No exponen datos sensibles ni afectan a otros usuarios.
+
+// react-doctor-disable-next-line react-doctor/server-auth-actions
 export async function getValueFromCookie(key: string): Promise<string | undefined> {
   const cookieStore = await cookies();
   return cookieStore.get(key)?.value;
 }
 
+// react-doctor-disable-next-line react-doctor/server-auth-actions
 export async function setValueToCookie(
   key: string,
   value: string,
@@ -22,6 +30,7 @@ export async function setValueToCookie(
   });
 }
 
+// react-doctor-disable-next-line react-doctor/server-auth-actions
 export async function getPreference<T extends string>(key: string, allowed: readonly T[], fallback: T): Promise<T> {
   const cookieStore = await cookies();
   const cookie = cookieStore.get(key);
@@ -32,6 +41,7 @@ export async function getPreference<T extends string>(key: string, allowed: read
 /// Fija (o limpia, con `null`) el tenant activo que el super usuario `mango`
 /// está inspeccionando. Solo el rol `mango` puede usarla (FR-021).
 export async function setMangoActiveTenant(tenantId: string | null): Promise<void> {
+  await requireUser();
   const ctx = await getTenantContext();
   if (ctx?.role !== "MANGO") {
     throw new ForbiddenError("Solo el rol mango puede seleccionar una organización.");

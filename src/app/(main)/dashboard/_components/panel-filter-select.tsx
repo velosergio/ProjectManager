@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -16,13 +16,11 @@ interface PanelFilterSelectProps {
 /// que las secciones RSC se rendericen con datos reales filtrados.
 export function PanelFilterSelect({ paramKey, value, options, ariaLabel, className }: PanelFilterSelectProps) {
   const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   const handleChange = (next: string) => {
-    const params = new URLSearchParams(searchParams);
-    params.set(paramKey, next);
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    const url = new URL(window.location.href);
+    url.searchParams.set(paramKey, next);
+    router.replace(`${url.pathname}?${url.searchParams.toString()}`, { scroll: false });
   };
 
   return (

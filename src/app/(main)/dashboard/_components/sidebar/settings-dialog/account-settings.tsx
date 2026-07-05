@@ -5,7 +5,7 @@ import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -21,7 +21,7 @@ import { changePassword, updateProfile } from "@/server/profile";
 // puede importar aquí porque arrastra Prisma al bundle. La Server Action revalida.
 const profileFormSchema = z.object({
   name: z.string().min(2, { message: "El nombre debe tener al menos 2 caracteres." }),
-  image: z.string().url({ message: "Ingresa una URL de imagen válida." }).or(z.literal("")).optional(),
+  image: z.url({ message: "Ingresa una URL de imagen válida." }).or(z.literal("")).optional(),
 });
 
 const passwordFormSchema = z.object({
@@ -71,8 +71,8 @@ export function AccountSettings({ user }: { readonly user: { name: string; email
     defaultValues: { currentPassword: "", newPassword: "" },
   });
 
-  const watchedName = profileForm.watch("name");
-  const watchedImage = profileForm.watch("image");
+  const watchedName = useWatch({ control: profileForm.control, name: "name" });
+  const watchedImage = useWatch({ control: profileForm.control, name: "image" });
 
   const onSubmitProfile = (data: ProfileFormValues) => {
     startProfileTransition(async () => {

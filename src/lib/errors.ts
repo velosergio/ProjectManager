@@ -46,6 +46,15 @@ export class NotFoundError extends Error {
   }
 }
 
+/// La operación dejaría a la organización sin ningún administrador activo
+/// (FASE 4, FR-008).
+export class LastAdminError extends Error {
+  constructor(message = "Debe existir al menos un administrador activo en la organización.") {
+    super(message);
+    this.name = "LastAdminError";
+  }
+}
+
 /// Conflicto de unicidad de nombre dentro del tenant (etiquetas, tipos).
 export class DuplicateNameError extends Error {
   constructor(message = "Ya existe un elemento con ese nombre.") {

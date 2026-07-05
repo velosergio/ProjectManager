@@ -6,7 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
 import { Skeleton } from "@/components/ui/skeleton";
 import { auth } from "@/lib/auth";
+import { findRecentNotes } from "@/lib/notes/queries";
 import { getTenantContext } from "@/lib/tenant-context";
+import { getTenantDb } from "@/lib/tenant-db-session";
 
 import { CalendarPanel } from "./_components/calendar-panel";
 import { FocusCard } from "./_components/focus-card";
@@ -28,6 +30,8 @@ import { RecentOpportunities } from "./_components/widgets/crm/recent-opportunit
 import { AccountAllocation } from "./_components/widgets/finance/account-allocation";
 import { Shortcuts } from "./_components/widgets/finance/shortcuts";
 import { SpendingOverview } from "./_components/widgets/finance/spending-overview";
+import { toNoteListItem } from "./notes/_components/mappers";
+import type { NoteListItem } from "./notes/_components/types";
 
 /// Devuelve el saludo apropiado según la hora del día.
 function obtenerSaludo(): string {
@@ -63,6 +67,14 @@ export default async function Page({
 
   const pstatus = typeof params.pstatus === "string" ? params.pstatus : undefined;
   const trange = typeof params.trange === "string" ? params.trange : undefined;
+
+  // Notas recientes reales para el widget (FR-024): las 4 últimas del tenant.
+  let recentNotes: NoteListItem[] = [];
+  if (session?.tenantId) {
+    const db = await getTenantDb();
+    const recent = await findRecentNotes(db);
+    recentNotes = recent.map((note) => toNoteListItem(note, { userId: session.userId, role: session.role }));
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -116,7 +128,7 @@ export default async function Page({
         <section className="flex flex-col gap-6 lg:col-span-3">
           <CalendarPanel />
           <FocusCard />
-          <RecentNotesCard />
+          <RecentNotesCard notes={recentNotes} />
           <WeeklySummaryCard />
         </section>
       </div>

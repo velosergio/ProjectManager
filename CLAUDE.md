@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan
-at specs/006-client-management/plan.md
+at specs/007-team-notes/plan.md
 <!-- SPECKIT END -->
 
 ## Idioma
