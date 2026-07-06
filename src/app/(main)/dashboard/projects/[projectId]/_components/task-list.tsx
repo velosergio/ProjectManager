@@ -2,8 +2,6 @@
 
 import * as React from "react";
 
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
 import { CalendarClock, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -11,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
+import { formatCalendarDate } from "@/lib/format-date";
 import { TASK_STATUS_LABELS } from "@/lib/projects/labels";
 import { cn } from "@/lib/utils";
 
@@ -111,7 +110,7 @@ export function TaskList({ tenantId, projectId, tasks, members, canManage, canCr
                         task.overdue ? "text-destructive" : "text-muted-foreground",
                       )}
                     >
-                      {format(task.dueDate, "d MMM", { locale: es })}
+                      {formatCalendarDate(task.dueDate, "d MMM")}
                     </span>
                   )}
                   <span className="hidden text-muted-foreground text-xs sm:inline">

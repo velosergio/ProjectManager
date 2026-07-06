@@ -3,7 +3,6 @@
 import * as React from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
 import { Pencil, Plus } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -23,6 +22,7 @@ import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { formatCalendarDate } from "@/lib/format-date";
 import { TASK_STATUS_LABELS, TASK_STATUS_ORDER } from "@/lib/projects/labels";
 
 import type { CatalogOption, TaskRow } from "../../_components/types";
@@ -50,7 +50,7 @@ function toFormValues(task?: TaskRow): FormValues {
     description: task?.description ?? "",
     status: task?.status ?? "TODO",
     assigneeId: task?.assigneeId ?? NONE,
-    dueDate: task?.dueDate ? format(task.dueDate, "yyyy-MM-dd") : "",
+    dueDate: task?.dueDate ? formatCalendarDate(task.dueDate, "yyyy-MM-dd") : "",
   };
 }
 

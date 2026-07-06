@@ -17,16 +17,18 @@ const optionalId = z
 const DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/;
 
 /// Fecha opcional aceptando `Date` o cadenas de formularios; "" = sin fecha.
-/// Las fechas «solo día» (yyyy-MM-dd de <input type="date">) se interpretan
-/// como medianoche LOCAL: coaccionarlas como ISO las movería al día anterior
-/// en zonas horarias con offset negativo.
+/// Las fechas «solo día» (yyyy-MM-dd de <input type="date">) se almacenan como
+/// medianoche UTC, con independencia de la zona horaria del servidor. Así el
+/// día de calendario se conserva y puede formatearse de forma determinista en
+/// servidor y cliente (ver `formatCalendarDate` en `@/lib/format-date`),
+/// evitando errores de hidratación (React #418).
 const optionalDate = z.preprocess((value) => {
   if (value === "" || value === undefined) {
     return null;
   }
   if (typeof value === "string" && DATE_ONLY.test(value)) {
     const [year, month, day] = value.split("-").map(Number);
-    return new Date(year ?? 0, (month ?? 1) - 1, day ?? 1);
+    return new Date(Date.UTC(year ?? 0, (month ?? 1) - 1, day ?? 1));
   }
   return value;
 }, z.coerce.date({ message: "Fecha inválida." }).nullable());

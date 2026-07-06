@@ -3,15 +3,13 @@
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
 import { Progress } from "@/components/ui/progress";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { canDeleteProject, canEditProject } from "@/lib/authz-projects";
+import { formatCalendarDate } from "@/lib/format-date";
 import { PROJECT_PRIORITY_LABELS, PROJECT_STATUS_LABELS } from "@/lib/projects/labels";
 
 import { DeleteProjectDialog } from "./delete-project-dialog";
@@ -120,7 +118,7 @@ export function ProjectsTable({
                     </div>
                   </TableCell>
                   <TableCell className="text-muted-foreground">
-                    {project.endDate ? format(project.endDate, "d 'de' MMM yyyy", { locale: es }) : "—"}
+                    {project.endDate ? formatCalendarDate(project.endDate, "d 'de' MMM yyyy") : "—"}
                   </TableCell>
                   <TableCell className="text-muted-foreground">{project.owner?.name ?? "Sin asignar"}</TableCell>
                   <TableCell>

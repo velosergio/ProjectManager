@@ -1,9 +1,7 @@
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
-
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { formatCalendarDate } from "@/lib/format-date";
 import { PROJECT_PRIORITY_LABELS, PROJECT_STATUS_LABELS } from "@/lib/projects/labels";
 
 import { DeleteProjectDialog } from "../../_components/delete-project-dialog";
@@ -19,7 +17,7 @@ interface ProjectHeaderProps {
 }
 
 function formatDate(date: Date | null): string {
-  return date ? format(date, "d 'de' MMMM yyyy", { locale: es }) : "—";
+  return date ? formatCalendarDate(date, "d 'de' MMMM yyyy") : "—";
 }
 
 /// Cabecera del detalle (FR-008): todos los campos del proyecto, etiquetas,

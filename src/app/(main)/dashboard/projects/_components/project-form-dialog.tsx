@@ -3,7 +3,6 @@
 import * as React from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
 import { Pencil, Plus } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -24,6 +23,7 @@ import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { formatCalendarDate } from "@/lib/format-date";
 import {
   PROJECT_PRIORITY_LABELS,
   PROJECT_PRIORITY_ORDER,
@@ -76,8 +76,8 @@ function toFormValues(project?: ProjectRow): FormValues {
     processTypeId: project?.processType?.id ?? NONE,
     status: project?.status ?? "PENDING",
     priority: project?.priority ?? "MEDIUM",
-    startDate: project?.startDate ? format(project.startDate, "yyyy-MM-dd") : "",
-    endDate: project?.endDate ? format(project.endDate, "yyyy-MM-dd") : "",
+    startDate: project?.startDate ? formatCalendarDate(project.startDate, "yyyy-MM-dd") : "",
+    endDate: project?.endDate ? formatCalendarDate(project.endDate, "yyyy-MM-dd") : "",
   };
 }
 
